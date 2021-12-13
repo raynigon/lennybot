@@ -6,6 +6,7 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
+from pip.req import parse_requirements
 
 def readme():
     with open('README.md') as f:
@@ -16,6 +17,9 @@ def version():
     with open('version.txt') as f:
         return f.read()
 
+def install_requires():
+    reqs = parse_requirements('requirements.txt', session='hack')
+    return [str(ir.req) for ir in reqs]
 
 setup(
     name='lennybot',
@@ -40,10 +44,7 @@ setup(
         'Bug Reports': 'https://github.com/raynigon/lennybot/issues',
         'Source': 'https://github.com/raynigon/lennybot/',
     },
-    install_requires=[
-        'requests',
-        'pyyaml'
-    ],
+    install_requires=install_requires(),
     extras_require={
         'dev': ['setuptools', 'wheel'],
         'test': ['coverage'],
