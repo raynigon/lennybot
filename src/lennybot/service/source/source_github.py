@@ -10,9 +10,9 @@ class GithubSource(ISource):
     def __init__(self, name, config: LennyBotSourceConfig, github: GitHubService) -> None:
         self._name = name
         self._github = github
-        self._repository = config["repository"]
-        self._version_regex = config["regex"]
-
+        self._repository = config.repository
+        self._version_regex = config.regex
+    
     @property
     def application(self) -> str:
         return self._name

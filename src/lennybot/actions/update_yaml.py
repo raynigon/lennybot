@@ -1,3 +1,4 @@
+from ..config.config import LennyBotActionConfig
 from .iaction import IAction
 from types import SimpleNamespace
 from yamlpath.common import Parsers
@@ -6,14 +7,15 @@ from yamlpath import Processor
 
 class UpdateYamlAction(IAction):
 
-    def __init__(self, name, target_version, config) -> None:
+    def __init__(self, name, target_version, config: LennyBotActionConfig) -> None:
         self._name = name
         self._target_version = target_version
-        self._target_file = config["targetFile"]
-        self._yaml_path = config["yamlPath"]
-        self._value_pattern = "{{version}}"
-        if "valuePattern" in config.keys():
-            self._value_pattern = config["valuePattern"]
+        self._target_file = config.target_file
+        self._yaml_path = config.yaml_path
+        if config.value_pattern is not None:
+            self._value_pattern = config.value_pattern
+        else:
+            self._value_pattern = "{{version}}"
 
     @property
     def application(self) -> str:

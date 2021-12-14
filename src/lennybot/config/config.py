@@ -50,7 +50,6 @@ CONFIGURATION_OPTIONS = {
                     },
                     "regex": {
                         "type": "string",
-                        "required": False,
                         "attribute": "_regex"
                     },
                 }
@@ -62,22 +61,39 @@ CONFIGURATION_OPTIONS = {
                 "properties": {
                     "type": {
                         "type": "string",
-                        "required": True,
                         "attribute": "_type"
                     },
                     "image": {
                         "type": "string",
-                        "required": False,
                         "attribute": "_image"
                     },
                     "kustomizePath": {
                         "type": "string",
-                        "required": False,
                         "attribute": "_kustomize_path"
                     },
                     "tagPattern": {
                         "type": "string",
                         "attribute": "_tag_pattern"
+                    },
+                    "url": {
+                        "type": "string",
+                        "attribute": "_url"
+                    },
+                    "target": {
+                        "type": "string",
+                        "attribute": "_target"
+                    },
+                    "targetFile": {
+                        "type": "string",
+                        "attribute": "_target_file"
+                    },
+                    "yamlPath": {
+                        "type": "string",
+                        "attribute": "_yaml_path"
+                    },
+                    "valuePattern": {
+                        "type": "string",
+                        "attribute": "_value_pattern"
                     }
                 }
             }
@@ -113,6 +129,11 @@ class LennyBotActionConfig:
         self._image = None
         self._kustomize_path = None
         self._tag_pattern = None
+        self._target = None
+        self._url = None
+        self._target_file = None
+        self._yaml_path = None
+        self._value_pattern = None
 
     @property
     def type(self) -> str:
@@ -130,6 +151,25 @@ class LennyBotActionConfig:
     def tag_pattern(self) -> str:
         return self._tag_pattern
 
+    @property
+    def target(self) -> str:
+        return self._target
+
+    @property
+    def url(self) -> str:
+        return self._url
+
+    @property
+    def target_file(self) -> str:
+        return self._target_file
+
+    @property
+    def yaml_path(self) -> str:
+        return self._yaml_path
+
+    @property
+    def value_pattern(self) -> str:
+        return self._value_pattern
 
 class LennyBotAppConfig:
 
