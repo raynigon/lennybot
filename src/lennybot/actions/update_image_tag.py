@@ -23,8 +23,8 @@ class UpdateImageTagAction(IAction):
         return self._target_version
 
     def run(self):
-        with open(self._kustomize_path) as fp:
-            kustomize = yaml.safe_load(fp)
+        with open(self._kustomize_path) as file_ptr:
+            kustomize = yaml.safe_load(file_ptr)
         found = False
         for image in kustomize["images"]:
             if image["name"] != self._image:
@@ -34,8 +34,8 @@ class UpdateImageTagAction(IAction):
             break
         if not found:
             raise Exception(f"Unable to find image {self._image}")
-        with open(self._kustomize_path, "w") as fp:
-            yaml.safe_dump(kustomize, fp, sort_keys=False, indent=4)
+        with open(self._kustomize_path, "w") as file_ptr:
+            yaml.safe_dump(kustomize, file_ptr, sort_keys=False, indent=4)
 
     def _create_new_tag(self):
         return self._tag_pattern.replace("{{version}}", self._target_version)

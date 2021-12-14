@@ -194,8 +194,8 @@ class LennyBotAppConfig:
 class LennyBotConfig:
 
     def __init__(self, filename) -> None:
-        with open(filename) as fp:
-            self._data = yaml.safe_load(fp)
+        with open(filename) as file_ptr:
+            self._data = yaml.safe_load(file_ptr)
         self._state_file = None
         self._github_token = None
         self._applications = []
