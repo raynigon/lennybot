@@ -6,7 +6,8 @@ https://github.com/pypa/sampleproject
 
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
-from pip.req import parse_requirements
+import pkg_resources
+
 
 def readme():
     with open('README.md') as f:
@@ -17,9 +18,12 @@ def version():
     with open('version.txt') as f:
         return f.read()
 
+
 def install_requires():
-    reqs = parse_requirements('requirements.txt', session='hack')
-    return [str(ir.req) for ir in reqs]
+    with open('requirements.txt') as f:
+        reqs = pkg_resources.parse_requirements(f.read())
+        return [str(ir) for ir in reqs]
+
 
 setup(
     name='lennybot',
@@ -51,5 +55,11 @@ setup(
     },
     python_requires='>=3.6, <4',
     package_dir={'': 'src'},
-    packages=find_packages(where='src'),    
+    packages=find_packages(where='src'),
+    data_files=[('generic', ['version.txt', 'README.md', 'requirements.txt'])],
+    entry_points={
+        'console_scripts': [
+            'lennybot=lennybot:main',
+        ],
+    }
 )
