@@ -4,7 +4,7 @@ from .update_yaml import UpdateYamlAction
 from .iaction import IAction
 
 def create_action(name, latest_version, config):
-    source_type = config["type"]
+    source_type = config.type
     if source_type == "image-tag-update":
         return UpdateImageTagAction(name, latest_version, config)
     elif source_type == "download-resources":
