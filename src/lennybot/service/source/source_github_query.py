@@ -1,17 +1,18 @@
 from .isource import ISource
 from ..github import GitHubService
 from ...helper import semver_2_vc
+from ...config import LennyBotSourceConfig
 import re
 import requests
 
 
 class GithubQuerySource(ISource):
 
-    def __init__(self, name, config, github: GitHubService) -> None:
+    def __init__(self, name, config: LennyBotSourceConfig, github: GitHubService) -> None:
         self._name = name
         self._github = github    
-        self._repository = config["repository"]
-        self._version_regex = config["regex"]
+        self._repository = config.repository
+        self._version_regex = config.regex
 
     @property
     def application(self) -> str:

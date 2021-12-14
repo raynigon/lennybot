@@ -1,17 +1,19 @@
+from ..config.config import LennyBotActionConfig
 from .iaction import IAction
 import yaml
 
 class UpdateImageTagAction(IAction):
 
-    def __init__(self, name, target_version, config) -> None:
+    def __init__(self, name, target_version, config: LennyBotActionConfig) -> None:
         self._name = name
-        self._image = config["image"]
-        self._kustomize_path = config["kustomizePath"]
+        self._image = config.image
+        self._kustomize_path = config.kustomize_path
         self._target_version = target_version
-        self._tag_pattern = "{{version}}"
-        if "tagPattern" in config.keys():
-            self._tag_pattern = config["tagPattern"]
-
+        if config.tag_pattern is not None:
+            self._tag_pattern = config.tag_pattern
+        else:
+            self._tag_pattern = "{{version}}"
+            
     @property
     def application(self) -> str:
         return self._name

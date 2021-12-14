@@ -1,3 +1,4 @@
+from ...config import LennyBotSourceConfig
 from .isource import ISource
 from ..github import GitHubService
 import re
@@ -6,7 +7,7 @@ import requests
 
 class GithubSource(ISource):
 
-    def __init__(self, name, config, github: GitHubService) -> None:
+    def __init__(self, name, config: LennyBotSourceConfig, github: GitHubService) -> None:
         self._name = name
         self._github = github
         self._repository = config["repository"]

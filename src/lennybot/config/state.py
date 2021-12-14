@@ -1,12 +1,13 @@
 import yaml
 import os
+from .config import LennyBotConfig
 
 class LennyBotState:
 
-    def __init__(self, filename) -> None:
-        self._filename = filename
+    def __init__(self, config: LennyBotConfig) -> None:
+        self._filename = config.state_file
         self._init_file()
-        with open(filename) as fp:
+        with open(self._filename) as fp:
             self._data = yaml.safe_load(fp)
 
     def _init_file(self):
