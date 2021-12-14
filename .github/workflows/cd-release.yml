@@ -32,7 +32,7 @@ jobs:
       uses: raynigon/release-documentation@main
       with:
         token: "${{ secrets.GITHUB_TOKEN }}"
-        latest: "${{ steps.vars.outputs.tag }}"
+        latest: "main"
         template: |
           # What's Changed
           <!-- Features -->
