@@ -1,13 +1,14 @@
+from ..config.config import LennyBotActionConfig
 from .iaction import IAction
 import requests
 
 class DownloadResourcesAction(IAction):
 
-    def __init__(self, name, target_version, config) -> None:
+    def __init__(self, name, target_version, config: LennyBotActionConfig) -> None:
         self._name = name
         self._target_version = target_version
-        self._url = config["url"]
-        self._target_path = config["target"]
+        self._url = config.url
+        self._target_path = config.target
 
     @property
     def application(self) -> str:
