@@ -1,0 +1,6 @@
+# action.yml
+name: 'lennybot'
+description: 'Automatically update your kustomize resources'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

@@ -1,0 +1,12 @@
+state:
+  file: "test/versions.yaml"
+applications:
+  - name: grafana
+    source:
+      type: "github-query"
+      repository: "grafana/grafana"
+      regex: "v([0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,})"
+    actions:
+      - type: "image-tag-update"
+        image: "grafana/grafana"
+        kustomizePath: "test/grafana/kustomization.yaml"
