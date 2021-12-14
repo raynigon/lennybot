@@ -29,6 +29,15 @@ To run the lennybot as docker image execute:
 
 ```docker run --rm -v "$(pwd):/workspace/ raynigon/lennybot```
 
+## How it works
+
+The lennybot allows to define multiple applications.
+Each application has to have a version source, which can be queried to determine the latest version.
+If a newer version is available, the lennybot executes multiple pre defined actions per application.
+E.g. Update Docker Image Tags.
+The applications, sources and actions can be configured in the `config.yml` file.
+For more information see below.
+
 ## Configuration
 The lennybot can be configured via the `config.yml` file and environment variables.
 
@@ -54,10 +63,10 @@ Each section represents a configuration object.
 | Path                                       | Description                                                                                                                                |
 |--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
 | applications[*].name                       | The name of the application which should be updated                                                                                        |
-| applications[*].source.type                | The type of source which should be used to determine the latest version for the application. (has to be one of "github" or "github-query") |
-| applications[*].source.repository          | The GitHub Repository which should be used to determine the latest version                                                                 |
-| applications[*].source.regex               | The regex pattern which is used to extract the semver version code from the tag value                                                      |
-| applications[\*].actions[\*].type          |                                                                                                                                            |
+| applications[*].source.type                | The source has to be either of the type "github" or of the type "github-query". See below for details. |
+| applications[*].source.repository          | The GitHub Repository which should be used to determine the latest version                    |
+| applications[*].source.regex               | The regex pattern which is used to extract the semver version code from the tag value         |
+| applications[\*].actions[\*].type          | The action has to be one of these types "image-tag-update", "download-resources" or "update-yaml". See below for details. |
 | applications[\*].actions[\*].url           |                                                                                                                                            |
 | applications[\*].actions[\*].target        |                                                                                                                                            |
 | applications[\*].actions[\*].image         |                                                                                                                                            |
