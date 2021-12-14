@@ -17,4 +17,5 @@ jobs:
         run: |
           echo "::add-matcher::.github/matchers/pylint-error.json"
           echo "::add-matcher::.github/matchers/pylint-warning.json"
+          pip install pylint
           pylint --output-format=colorized src/lennybot
