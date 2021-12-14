@@ -9,7 +9,8 @@ RUN python3 -m build
 
 FROM python:3
 
+WORKDIR /workspace/
 COPY --from=build /build/dist/*.whl .
-RUN pip install *.whl
+RUN pip install *.whl && rm *.whl
 
 CMD ["lennybot"]
