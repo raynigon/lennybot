@@ -1,3 +1,4 @@
+[![PyPI](https://badge.fury.io/py/lennybot.svg)](https://pypi.org/project/lennybot/)
 # lennybot
 
 ## Usage
