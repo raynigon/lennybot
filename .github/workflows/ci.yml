@@ -1,0 +1,21 @@
+name: CI
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2  
+      - name: Setup Python
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: 3.x
+      - name: Python Pip Install
+        uses: logikal-code/pip-install@v1.0.0
+      - name: Python Lint
+        run: |
+          echo "::add-matcher::.github/matchers/pylint-error.json"
+          echo "::add-matcher::.github/matchers/pylint-warning.json"
+          pip install pylint
+          pylint --output-format=colorized src/lennybot
