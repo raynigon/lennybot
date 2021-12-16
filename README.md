@@ -84,7 +84,7 @@ Each section represents a configuration object.
 
 ## Origin
 One upon time a colleague (Lenny) left my team.
-Besides being a Apache Solr genius, one of the tasks he really liked doing, 
+Besides being an Apache Solr genius, one of the tasks he really liked doing, 
 was the updating of the dependencies in our applications.
 Since everyone else in the team didnt like this job, we needed some automation for this.
 The lennybot was born to replace our colleague.
