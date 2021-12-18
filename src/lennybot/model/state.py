@@ -18,8 +18,8 @@ class LennyBotState:
                 yaml.safe_dump({}, file_ptr)
 
     def _calculate_hash(self):
-        with open(self._filename) as file_ptr:
-            return hashlib.md5(file_ptr.read())
+        with open(self._filename, "rb") as file_ptr:
+            return hashlib.md5(file_ptr.read()).hexdigest()
 
     def current_version(self, name):
         if name in self._data.keys():
