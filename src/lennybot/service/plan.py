@@ -1,7 +1,8 @@
 from typing import List
 from .source import create_source
 from ..actions import IAction, create_action
-from ..config import LennyBotConfig, LennyBotState, LennyBotAppConfig
+from ..config import LennyBotConfig, LennyBotAppConfig
+from ..model import LennyBotState, LennyBotPlan
 from ..helper import semver_2_vc
 from .github import GitHubService
 
@@ -13,7 +14,7 @@ class PlanService:
         for app_config in config.applications:
             self._applications.append(LennyBotApplication(app_config, self._github))
 
-    def plan(self, state: LennyBotState):
+    def plan(self, state: LennyBotState)->LennyBotPlan:
         actions = []
         for app in self._applications:
             state_version = state.current_version(app.name)
@@ -21,7 +22,7 @@ class PlanService:
             if state_version is not None and not self._should_update(state_version, latest_version):
                 continue
             actions.extend(app.create_actions())
-        return actions
+        return LennyBotPlan(state, actions)
     
     def _should_update(self, state_version, latest_version):
         if state_version == latest_version:

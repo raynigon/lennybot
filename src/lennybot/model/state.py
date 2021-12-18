@@ -1,12 +1,14 @@
 import yaml
 import os
-from .config import LennyBotConfig
+import hashlib
+from ..config.config import LennyBotConfig
 
 class LennyBotState:
 
     def __init__(self, config: LennyBotConfig) -> None:
         self._filename = config.state_file
         self._init_file()
+        self._hash = self._calculate_hash()
         with open(self._filename) as file_ptr:
             self._data = yaml.safe_load(file_ptr)
 
@@ -14,6 +16,10 @@ class LennyBotState:
         if not os.path.exists(self._filename):
             with open(self._filename, "w") as file_ptr:
                 yaml.safe_dump({}, file_ptr)
+
+    def _calculate_hash(self):
+        with open(self._filename) as file_ptr:
+            return hashlib.md5(file_ptr.read())
 
     def current_version(self, name):
         if name in self._data.keys():
@@ -28,6 +34,11 @@ class LennyBotState:
                 "version": version
             }
     
+    def is_valid(self):
+        return self._hash == self._calculate_hash()
+
     def save(self):
+        if not self.is_valid():
+            raise Exception("Invalid State")
         with open(self._filename, "w") as file_ptr:
             yaml.safe_dump(self._data, file_ptr, sort_keys=False, indent=4)
