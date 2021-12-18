@@ -24,4 +24,4 @@ class DownloadResourcesAction(IAction):
         if response.status_code != 200:
             raise Exception("Unable to download resources")
         with open(self._target_path, "w") as file_ptr:
-            file_ptr.write(response.text)upd
+            file_ptr.write(response.text)

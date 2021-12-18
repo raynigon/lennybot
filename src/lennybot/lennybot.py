@@ -17,3 +17,12 @@ class LennyBot:
     def apply(self, plan):
         state = LennyBotState(self._config)
         return self._apply_service.apply(plan, state)
+
+    def load_plan(self, filename):
+        pass
+
+    def save_plan(self, filename, plan):
+        pass
+
+    def ci_finalize(self, plan, result):
+        pass
