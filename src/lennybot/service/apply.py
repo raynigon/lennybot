@@ -1,8 +1,6 @@
 from typing import List
 
 from ..model.plan import LennyBotPlan
-from ..config import LennyBotState
-from ..actions import IAction
 
 class ApplyService:
 

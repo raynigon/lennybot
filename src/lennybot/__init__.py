@@ -14,8 +14,10 @@ def _version():
 
 
 def _find_config(args):
-    if "config.file" in args:
-        return args["config.file"]
+    if args.config is not None:
+        for item in args.config:
+            if item.startswith("config.file"):
+                return item.split("=")[1]
     if "LB_CONFIG_FILE" in os.environ.keys():
         return os.environ["LB_CONFIG_FILE"]
     if os.path.exists("config.yaml"):
@@ -35,7 +37,7 @@ def _arg_parser():
     parser.add_argument('action', metavar='action', type=str, nargs='?',
                         choices=['ci', 'plan', 'apply'], default='ci',
                         help='The action which should be executed. Has to be one of "plan", "apply" or "ci". Default is "ci"')
-    parser.add_argument('-p', '--plan', dest='plan', type=str, nargs=1, required=False,
+    parser.add_argument('-p', '--plan', dest='plan', type=str, required=False,
                         help='The filename of plan which should be saved or loaded')
     parser.add_argument('-c', '--config', dest='config', type=str, required=False, action='append',
                         help='A config value in the format key.subkey=value')
