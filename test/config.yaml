@@ -1,5 +1,10 @@
 state:
   file: "test/versions.yaml"
+github:
+  pr:
+    enabled: true
+    repository: "raynigon/lennybot"
+    branch: "lennybot-{{datetime}}"
 applications:
   - name: grafana
     source:
