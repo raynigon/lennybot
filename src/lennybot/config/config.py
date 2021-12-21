@@ -10,6 +10,15 @@ CONFIGURATION_OPTIONS = {
                 "type": "string",
                 "required": True,
                 "attribute": "_github_token"
+            },
+            "pr": {
+                "type": "object",
+                "attribute": "_github_pr",
+                "properties": {
+                    "enabled": {},
+                    "repository": {},
+                    "branchPrefix": {},
+                }
             }
         }
     },
@@ -190,6 +199,16 @@ class LennyBotAppConfig:
     def actions(self) -> List[LennyBotActionConfig]:
         return self._actions
 
+class LennyBotGithubPr:
+    
+    def __init__(self) -> None:
+        self._enabled = False
+        self._repository = None
+        self._branch_prefix = "lennybot-"
+
+    @property
+    def branch_prefix(self) -> str:
+        return self._branch_prefix
 
 class LennyBotConfig:
 
@@ -198,6 +217,7 @@ class LennyBotConfig:
             self._data = yaml.safe_load(file_ptr)
         self._state_file = None
         self._github_token = None
+        self._github_pr = LennyBotGithubPr()
         self._applications = []
         self._parse()
 
@@ -259,3 +279,7 @@ class LennyBotConfig:
     @property
     def github_token(self) -> str:
         return self._github_token
+
+    @property
+    def github_pr(self) -> LennyBotGithubPr:
+        return self._github_pr

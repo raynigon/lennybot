@@ -4,7 +4,7 @@ github:
   pr:
     enabled: true
     repository: "raynigon/lennybot"
-    branch: "lennybot-{{datetime}}"
+    branchPrefix: "lennybot-"
 applications:
   - name: grafana
     source:
