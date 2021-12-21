@@ -19,8 +19,7 @@ class LennyBot:
         return self._plan_service.plan(state)
 
     def apply(self, plan: LennyBotPlan):
-        state = LennyBotState(self._config)
-        return self._apply_service.apply(plan, state)
+        return self._apply_service.apply(plan)
 
     def load_plan(self, filename: str) -> LennyBotPlan:
         with open(filename, "rb") as file_ptr:

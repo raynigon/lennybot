@@ -19,7 +19,7 @@ class LennyBotState:
 
     def _calculate_hash(self):
         with open(self._filename, "rb") as file_ptr:
-            return hashlib.md5(file_ptr.read()).hexdigest()
+            return hashlib.sha256(file_ptr.read()).hexdigest()
 
     def current_version(self, name):
         if name in self._data.keys():
