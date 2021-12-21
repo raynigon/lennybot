@@ -63,6 +63,7 @@ def main() -> int:
         plan = app.load_plan(args.plan)
         app.apply(plan)
     elif args.action == "ci":
+        app.ci_setup()
         plan = app.plan()
         result = app.apply(plan)
         app.ci_finalize(plan, result)
