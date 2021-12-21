@@ -1,3 +1,5 @@
 pyyaml
 yamlpath
 requests
+GitPython
+PyGithub

@@ -4,9 +4,8 @@ from .model import LennyBotState
 from .actions import *
 from .service import PlanService, ApplyService, GitHubService
 import pickle
-
-from lennybot import config
-
+from git import Repo
+from datetime import datetime
 
 class LennyBot:
 
@@ -15,6 +14,8 @@ class LennyBot:
         self._github_service = GitHubService(self._config)
         self._plan_service = PlanService(self._github_service, self._config)
         self._apply_service = ApplyService()
+        self._repo = None
+        self._branch_name = None
 
     def plan(self) -> LennyBotPlan:
         state = LennyBotState(self._config)
@@ -31,7 +32,24 @@ class LennyBot:
         with open(filename, "wb") as file_ptr:
             pickle.dump(plan, file_ptr)
 
-    def ci_finalize(self, plan, result):
-        # TODO
-        # Create new Pull request and close old pull request
-        pr = self._github_service.find_latest_pr()
+    def ci_setup(self):
+        now = datetime.now().strftime("%Y%m%d%H%M%S")
+        self._branch_name = f"{self._config.github_pr.branch_prefix}-{now}"
+        self._repo = Repo("./")
+        head = self._repo.create_head(self._branch_name)
+        head.checkout()
+
+    def ci_finalize(self, plan: LennyBotPlan, result):
+        if not self._repo.index.diff(None) and not self._repo.untracked_files:
+            return
+        title = f"Lennybot updated {len(plan.applications)} applications"
+        body = "<TODO>"
+        if len(plan.applications) == 1:
+            title = f"Lennybot updated {plan.applications[0]}"
+        # Git Commit and Push
+        self._repo.git.add(A=True)
+        self._repo.git.commit(m=title)
+        origin = self._repo.remote(name='origin')
+        origin.push()
+        # Create Pull Request
+        self._github_service.create_pr(self._branch_name, title, body)
