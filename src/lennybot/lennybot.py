@@ -5,6 +5,8 @@ from .actions import *
 from .service import PlanService, ApplyService, GitHubService
 import pickle
 
+from lennybot import config
+
 
 class LennyBot:
 
@@ -30,4 +32,6 @@ class LennyBot:
             pickle.dump(plan, file_ptr)
 
     def ci_finalize(self, plan, result):
-        pass
+        # TODO
+        # Create new Pull request and close old pull request
+        pr = self._github_service.find_latest_pr()
