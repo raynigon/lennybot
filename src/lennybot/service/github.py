@@ -33,15 +33,14 @@ class GitHubService:
         if self._github is None:
             raise Exception("GitHub is not configured")
         repo = self._github.get_repo(self._config.github_pr.repository)
-        new_pull = repo.create_pull(title, body, repo.master_branch, branch_name)
+        new_pull = repo.create_pull(title, body, repo.default_branch , branch_name)
         pulls = self._find_own_pulls()
         for pull in pulls:
             if new_pull.id == pull.id:
                 continue
-            pull.create_comment(f"Superseded by #{new_pull.number}")
-            pull.state = "closed"
+            pull.as_issue().create_comment(f"Superseded by #{new_pull.number}")
+            pull.edit(state = "closed")
         
-
     def _find_own_pulls(self)->List[PullRequest]:
         repo = self._github.get_repo(self._config.github_pr.repository)
         pulls = repo.get_pulls("open")

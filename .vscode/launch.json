@@ -10,7 +10,11 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/lennybot.py",
             "console": "integratedTerminal",
-            "args": ["-c", "config.file=test/config.yaml", "-p", "test.plan", "ci"]
+            "cwd": "/Users/schnesi/Development/brose-ebike/cloud-ebike-addons/",
+            "args": ["-c", "config.file=.github/lennybot.yaml", "-p", "test.plan", "ci"],
+            "env": {
+                "LB_GITHUB_TOKEN": "<RETRACTED>"
+            }
         }
     ]
 }
