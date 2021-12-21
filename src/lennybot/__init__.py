@@ -51,9 +51,9 @@ def main() -> int:
     config_file = _find_config(args)
     app = LennyBot(config_file)
     # Execute plan only
-    if args.action == "plan" and args.plan is not None:
+    if args.action == "plan":
         plan = app.plan()
-        app.save_plan(args.plan, plan)
+        app.save_plan("lennybot.plan", plan)
     # Execute plan and apply
     elif args.action == "apply" and args.plan is None:
         plan = app.plan()
@@ -67,5 +67,6 @@ def main() -> int:
         result = app.apply(plan)
         app.ci_finalize(plan, result)
     else:
+        print("Unexpected Arguments")
         return 1
     return 0
