@@ -30,6 +30,8 @@ class GitHubService:
         return response.json()
 
     def create_pr(self, branch_name, title, body):
+        if self._github is None:
+            raise Exception("GitHub is not configured")
         repo = self._github.get_repo(self._config.github_pr.repository)
         new_pull = repo.create_pull(title, body, repo.master_branch, branch_name)
         pulls = self._find_own_pulls()

@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/src/lennybot.py",
             "console": "integratedTerminal",
-            "args": ["-c", "config.file=test/config.yaml", "-p", "test.plan", "plan"]
+            "args": ["-c", "config.file=test/config.yaml", "-p", "test.plan", "ci"]
         }
     ]
 }
