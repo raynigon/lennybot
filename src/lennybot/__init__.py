@@ -4,13 +4,15 @@ import os
 import argparse
 
 
-def _version():
+def _version()->str:
     if "__version__" in locals():
         return locals()["__version__"]
     if "__version__" in globals():
         return globals()["__version__"]
-    with open("version.txt") as file_ptr:
-        return file_ptr.read()
+    if os.path.exists("version.txt"):
+        with open("version.txt") as file_ptr:
+            return file_ptr.read()
+    return "-"
 
 
 def _find_config(args):

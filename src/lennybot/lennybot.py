@@ -34,7 +34,10 @@ class LennyBot:
 
     def ci_setup(self):
         now = datetime.now().strftime("%Y%m%d%H%M%S")
-        self._branch_name = f"{self._config.github_pr.branch_prefix}-{now}"
+        self._branch_name = f"{self._config.github_pr.branch_prefix}"
+        if not self._branch_name.endswith("-"):
+            self._branch_name = f"{self._branch_name}-"
+        self._branch_name = f"{self._branch_name}{now}"
         self._repo = Repo("./")
         head = self._repo.create_head(self._branch_name)
         head.checkout()
@@ -49,7 +52,6 @@ class LennyBot:
         # Git Commit and Push
         self._repo.git.add(A=True)
         self._repo.git.commit(m=title)
-        origin = self._repo.remote(name='origin')
-        origin.push()
+        self._repo.git.push('--set-upstream', 'origin', self._branch_name)
         # Create Pull Request
         self._github_service.create_pr(self._branch_name, title, body)
