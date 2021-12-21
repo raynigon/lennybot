@@ -15,9 +15,18 @@ CONFIGURATION_OPTIONS = {
                 "type": "object",
                 "attribute": "_github_pr",
                 "properties": {
-                    "enabled": {},
-                    "repository": {},
-                    "branchPrefix": {},
+                    "enabled": {
+                        "type": "bool",
+                        "attribute": "_enabled"
+                    },
+                    "repository": {
+                        "type": "bool",
+                        "attribute": "_repository"
+                    },
+                    "branchPrefix": {
+                        "type": "bool",
+                        "attribute": "_branch_prefix"
+                    },
                 }
             }
         }
@@ -205,6 +214,14 @@ class LennyBotGithubPr:
         self._enabled = False
         self._repository = None
         self._branch_prefix = "lennybot-"
+
+    @property
+    def enabled(self) -> str:
+        return self._enabled
+
+    @property
+    def repository(self) -> str:
+        return self._repository
 
     @property
     def branch_prefix(self) -> str:
