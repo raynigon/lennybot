@@ -4,8 +4,9 @@ import requests
 
 class DownloadResourcesAction(IAction):
 
-    def __init__(self, name, target_version, config: LennyBotActionConfig) -> None:
+    def __init__(self, name, source_version, target_version, config: LennyBotActionConfig) -> None:
         self._name = name
+        self._source_version = source_version
         self._target_version = target_version
         self._url = config.url
         self._target_path = config.target

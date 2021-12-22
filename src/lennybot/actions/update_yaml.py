@@ -7,8 +7,9 @@ from yamlpath import Processor
 
 class UpdateYamlAction(IAction):
 
-    def __init__(self, name, target_version, config: LennyBotActionConfig) -> None:
+    def __init__(self, name, source_version, target_version, config: LennyBotActionConfig) -> None:
         self._name = name
+        self._source_version = source_version
         self._target_version = target_version
         self._target_file = config.target_file
         self._yaml_path = config.yaml_path

@@ -46,9 +46,13 @@ class LennyBot:
         if not self._repo.index.diff(None) and not self._repo.untracked_files:
             return
         title = f"Lennybot updated {len(plan.applications)} applications"
-        body = "<TODO>"
         if len(plan.applications) == 1:
             title = f"Lennybot updated {plan.applications[0]}"
+        body = "Lennybot updated following applications:\n"
+        for app in plan.applications:
+            body += f"* Bumps {app} from {plan.source_version(app)} to {plan.target_version(app)}\n"
+        body += "\n"
+        body += "To resolve any conflict try to run the lennybot again\n"
         # Git Commit and Push
         self._repo.git.add(A=True)
         self._repo.git.commit(m=title)
