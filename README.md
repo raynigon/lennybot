@@ -14,6 +14,11 @@
 ### CLI
 Install package with `pip install lennybot`.
 To start the application run the `lennybot` command.
+You can specify the Action which should be executed.
+This action can be "ci", "plan" or "apply".
+The CI CLI action executed apply and handles git operations such as, commit and branch creation.
+The plan action allows to plan updates and save the plan for later.
+The apply action can either execute an existing plan, or create a new plan and apply it immediately.
 
 ### Docker
 To run the lennybot as docker image execute:
@@ -45,9 +50,12 @@ Each section represents a configuration object.
 
 ### GitHub
 
-| Path       | Description                                                           |
-|------------|-----------------------------------------------------------------------|
-| state.file | The state file which is used to store the version of each application |
+| Path                                       | Description                                                            |
+|--------------------------------------------|------------------------------------------------------------------------|
+| state.file                                 | The state file which is used to store the version of each application  |
+| state.pr.enabled                           | Toggle PR creation in CI mode. Has to be either true or false          |
+| state.pr.repository                        | The name of the repository in github on which the PR should be created |
+| state.pr.branchPrefix                      | Prefix for the branch name which should be used to create the PRs      |
 
 ### Applications
 
