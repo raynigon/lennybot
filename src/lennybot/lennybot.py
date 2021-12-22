@@ -54,6 +54,8 @@ class LennyBot:
         body += "\n"
         body += "To resolve any conflict try to run the lennybot again\n"
         # Git Commit and Push
+        self._repo.config_writer().set_value("user", "name", "lennybot").release()
+        self._repo.config_writer().set_value("user", "email", "lennybot@raynigon.com").release()
         self._repo.git.add(A=True)
         self._repo.git.commit(m=title)
         self._repo.git.push('--set-upstream', 'origin', self._branch_name)
