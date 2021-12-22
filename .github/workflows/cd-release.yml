@@ -14,6 +14,7 @@ jobs:
     - name: Get current date
       id: params
       run: |
+        echo "::set-output name=latest::$(git describe --tags `git rev-list --tags --max-count=1`)"
         echo "::set-output name=date::$(date +'%Y-%m-%d')"
         echo "::set-output name=version::$(cat version.txt)"
     - name: Install dependencies
@@ -32,7 +33,7 @@ jobs:
       uses: raynigon/release-documentation@main
       with:
         token: "${{ secrets.GITHUB_TOKEN }}"
-        latest: "main"
+        latest: "${{ steps.params.outputs.latest }}"
         template: |
           # What's Changed
           <!-- Features -->
