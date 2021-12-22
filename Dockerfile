@@ -13,4 +13,4 @@ WORKDIR /workspace/
 COPY --from=build /build/dist/*.whl .
 RUN pip install *.whl && rm *.whl
 
-CMD ["lennybot"]
+CMD ["lennybot", "ci"]

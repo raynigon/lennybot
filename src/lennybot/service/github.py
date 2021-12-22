@@ -1,6 +1,7 @@
 from typing import Dict, List
 
 from github.PullRequest import PullRequest
+from github.Repository import Repository
 
 from ..config import LennyBotConfig
 import requests
@@ -34,6 +35,8 @@ class GitHubService:
             raise Exception("GitHub is not configured")
         repo = self._github.get_repo(self._config.github_pr.repository)
         new_pull = repo.create_pull(title, body, repo.default_branch , branch_name)
+        labels = self._get_or_create_labels(repo)
+        new_pull.add_to_labels(*labels)
         pulls = self._find_own_pulls()
         for pull in pulls:
             if new_pull.id == pull.id:
@@ -55,3 +58,10 @@ class GitHubService:
         if self._token is not None:
             headers["Authorization"] = f"Bearer {self._token}"
         return headers
+    
+    def _get_or_create_labels(self, repo: Repository):
+        for label in repo.get_labels():
+            if label.name == "dependencies":
+                return [label]
+        label = repo.create_label("dependencies", "0366d6", "Pull requests that update a dependency file")
+        return [label]
