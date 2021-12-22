@@ -16,6 +16,10 @@ class DownloadResourcesAction(IAction):
         return self._name
 
     @property
+    def source_version(self) -> str:
+        return self._source_version
+
+    @property
     def target_version(self) -> str:
         return self._target_version
 
