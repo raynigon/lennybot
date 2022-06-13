@@ -36,17 +36,12 @@ class UpdateDockerfileAction(IAction):
         result = []
         for line in lines:
             match = re.match(self.FROM_PATTERN, line)
-            if match is not None and match.group(1) == self.source_name:
-                if match.group(2) is None:
-                    result.append(
-                        f"FROM {self.source_name}:{self._create_value()}")
-                else:
-                    result.append(
-                        f"FROM {self.source_name}:{self._create_value()}{match.group(2)}")
+            if match is not None and match.group(1) == self._image_name:
+                result.append(f"FROM {self._image_name}:{self._create_value()}{match.group(2)}\n")
                 continue
             result.append(line)
         with open(self._target_file, "w") as file_ptr:
-            file_ptr.write(lines)
+            file_ptr.writelines(result)
 
     def _create_value(self):
         return self._value_pattern.replace("{{version}}", self._target_version)
