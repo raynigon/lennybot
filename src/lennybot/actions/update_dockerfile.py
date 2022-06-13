@@ -1,7 +1,11 @@
+import re
 from ..config.config import LennyBotActionConfig
 from .iaction import IAction
 
+
 class UpdateDockerfileAction(IAction):
+
+    FROM_PATTERN = r"FROM ([^:]*):[^\s]*(.*)"
 
     def __init__(self, name, source_version, target_version, config: LennyBotActionConfig) -> None:
         self._name = name
@@ -31,8 +35,14 @@ class UpdateDockerfileAction(IAction):
             lines = file_ptr.readlines()
         result = []
         for line in lines:
-            if "FROM" in line and self._image_name in line:
-                result.append(f"FROM {self.source_name}:{self._create_value()}")
+            match = re.match(self.FROM_PATTERN, line)
+            if match is not None and match.group(1) == self.source_name:
+                if match.group(2) is None:
+                    result.append(
+                        f"FROM {self.source_name}:{self._create_value()}")
+                else:
+                    result.append(
+                        f"FROM {self.source_name}:{self._create_value()}{match.group(2)}")
                 continue
             result.append(line)
         with open(self._target_file, "w") as file_ptr:
