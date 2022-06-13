@@ -90,6 +90,9 @@ Each section represents a configuration object.
 #### Update YAML Action
 <TODO>
 
+#### Update Dockerfile Action
+<TODO>
+
 ## Origin
 One upon time a colleague (Lenny) left my team.
 Besides being an Apache Solr genius, one of the tasks he really liked doing, 
