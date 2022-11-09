@@ -1,4 +1,5 @@
 from typing import List
+import logging
 
 from ..model.plan import LennyBotPlan
 
@@ -12,6 +13,10 @@ class ApplyService:
         if not state.is_valid():
             raise Exception("Invalid State")
         for action in plan.actions:
-            action.run()
-            state.update_version(action.application, action.target_version)
+            try:
+                action.run()
+                state.update_version(action.application, action.target_version)
+            except Exception as exception:
+                print(f"Exception during action execution for {action.application}")
+                raise exception
         state.save()
