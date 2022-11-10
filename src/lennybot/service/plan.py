@@ -54,9 +54,13 @@ class PlanService:
     def plan(self, state: LennyBotState) -> LennyBotPlan:
         actions = []
         for app in self._applications:
-            app.init(state)
-            if app.should_update():
-                actions.extend(app.create_actions())
+            try:
+                app.init(state)
+                if app.should_update():
+                    actions.extend(app.create_actions())
+            except Exception as exception:
+                print(f"Exception during action planning for {app.name}")
+                raise exception
         return LennyBotPlan(state, actions)
 
 
