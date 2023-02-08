@@ -247,7 +247,7 @@ class LennyBotConfig:
             if name not in data.keys():
                 continue
             config_type = property["type"]
-            if config_type == "object" or config_type == "list":
+            if config_type in ["object", "list"]:
                 self._parse_nested_data(name, property, data, target)
                 continue
             attribute_name = property["attribute"]

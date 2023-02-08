@@ -23,8 +23,8 @@ class RemoveChecksumsAction(IAction):
         return self._target_version
 
     def run(self):
-        with open(self._target_file, encoding="utf-8") as fp:
-            docs = list(yaml.safe_load_all(fp))
+        with open(self._target_file, encoding="utf-8") as file_ptr:
+            docs = list(yaml.safe_load_all(file_ptr))
 
         for doc in docs:
             if doc["kind"] == "Deployment":
@@ -32,8 +32,8 @@ class RemoveChecksumsAction(IAction):
             elif doc["kind"] == "Job":
                 self._update_job(doc)
 
-        with open(self._target_file, "w", encoding="utf-8") as fp:
-            docs = yaml.safe_dump_all(docs, fp)
+        with open(self._target_file, "w", encoding="utf-8") as file_ptr:
+            docs = yaml.safe_dump_all(docs, file_ptr)
 
     def _update_deployment(self, doc):
         containers = doc["spec"]["template"]["spec"]["containers"]
