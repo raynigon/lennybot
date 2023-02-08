@@ -4,5 +4,5 @@ branding:
 description: Automatically update your kustomize resources
 name: lennybot-gha
 runs:
-  image: docker://ghcr.io/raynigon/lennybot:v1.0.12
+  image: docker://ghcr.io/raynigon/lennybot:v1.0.13
   using: docker
