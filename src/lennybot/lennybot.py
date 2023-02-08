@@ -7,6 +7,8 @@ import pickle
 import logging
 from git import Repo, GitDB
 from datetime import datetime
+import subprocess
+import os
 
 class LennyBot:
 
@@ -50,6 +52,9 @@ class LennyBot:
             self._branch_name = f"{self._branch_name}-"
         self._branch_name = f"{self._branch_name}{now}"
         self._log.debug(f"Determined branch name {self._branch_name}")
+        result = subprocess.call(["git", "config", "--global", "--add", "safe.directory", os.getcwd()])
+        if result != 0:
+            self._log.error("Unexpected return code from git config")
         self._repo = Repo("./", odbt=GitDB)
         self._log.debug(f"Initialized repository")
         head = self._repo.create_head(self._branch_name)
