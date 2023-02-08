@@ -7,9 +7,9 @@ WORKDIR /build/
 COPY . .
 RUN python3 -m build
 
-FROM python:3-alpine
+FROM python:3
 
-RUN apk add git openssh && pip install --upgrade pip
+RUN pip install --upgrade pip
 WORKDIR /workspace/
 COPY --from=build /build/dist/*.whl .
 RUN pip install *.whl && rm *.whl
