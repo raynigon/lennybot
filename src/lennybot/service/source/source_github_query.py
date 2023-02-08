@@ -3,14 +3,13 @@ from ..github import GitHubService
 from ...helper import semver_2_vc
 from ...config import LennyBotSourceConfig
 import re
-import requests
 
 
 class GithubQuerySource(ISource):
 
     def __init__(self, name, config: LennyBotSourceConfig, github: GitHubService) -> None:
         self._name = name
-        self._github = github    
+        self._github = github
         self._repository = config.repository
         self._version_regex = config.regex
 
@@ -33,6 +32,5 @@ class GithubQuerySource(ISource):
             raise Exception("No valid version was found")
         results.sort(key=semver_2_vc)
         return results[-1]
-        
 
         

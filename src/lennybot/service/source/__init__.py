@@ -7,7 +7,6 @@ def create_source(name, config: LennyBotSourceConfig, github) -> ISource:
     source_type = config.type
     if source_type == "github":
         return GithubSource(name, config, github)
-    elif source_type == "github-query":
+    if source_type == "github-query":
         return GithubQuerySource(name, config, github)
-    else:
-        raise Exception(f"Unknown Source Type: {source_type}")
+    raise Exception(f"Unknown Source Type: {source_type}")

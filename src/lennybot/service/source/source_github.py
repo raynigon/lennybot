@@ -12,7 +12,7 @@ class GithubSource(ISource):
         self._github = github
         self._repository = config.repository
         self._version_regex = config.regex
-    
+
     @property
     def application(self) -> str:
         return self._name

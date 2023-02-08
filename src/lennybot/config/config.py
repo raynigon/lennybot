@@ -209,7 +209,7 @@ class LennyBotAppConfig:
         return self._actions
 
 class LennyBotGithubPr:
-    
+
     def __init__(self) -> None:
         self._enabled = False
         self._repository = None

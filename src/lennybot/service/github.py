@@ -43,7 +43,7 @@ class GitHubService:
                 continue
             pull.as_issue().create_comment(f"Superseded by #{new_pull.number}")
             pull.edit(state = "closed")
-        
+
     def _find_own_pulls(self)->List[PullRequest]:
         repo = self._github.get_repo(self._config.github_pr.repository)
         pulls = repo.get_pulls("open")
@@ -58,7 +58,7 @@ class GitHubService:
         if self._token is not None:
             headers["Authorization"] = f"Bearer {self._token}"
         return headers
-    
+
     def _get_or_create_labels(self, repo: Repository):
         for label in repo.get_labels():
             if label.name == "dependencies":
