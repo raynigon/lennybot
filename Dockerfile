@@ -7,7 +7,7 @@ WORKDIR /build/
 COPY . .
 RUN python3 -m build
 
-FROM python:3
+FROM python:3-alpine
 
 WORKDIR /workspace/
 COPY --from=build /build/dist/*.whl .
