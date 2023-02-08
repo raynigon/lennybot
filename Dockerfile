@@ -9,7 +9,8 @@ RUN python3 -m build
 
 FROM python:3-bullseye
 
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip && \
+    git config --global --add safe.directory '*'
 WORKDIR /workspace/
 COPY --from=build /build/dist/*.whl .
 RUN pip install *.whl && rm *.whl
