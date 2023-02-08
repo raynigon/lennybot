@@ -244,7 +244,7 @@ class LennyBotConfig:
     def _parse(self):
         self._parse_data(CONFIGURATION_OPTIONS, self._data, self)
         self._parse_env()
-    
+
     def _logging(self):
         logging.basicConfig(level=logging.DEBUG,format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
         self._log = logging.getLogger(self.__class__.__name__)
