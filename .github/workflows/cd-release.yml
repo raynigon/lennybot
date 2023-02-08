@@ -38,7 +38,6 @@ jobs:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
-        python3 .github/scripts/update_action.py v${{ steps.params.outputs.version }}
         python3 -m build
         python3 -m twine upload --non-interactive dist/*
     - id: content
@@ -84,6 +83,15 @@ jobs:
           * {{ title }} PR: #{{ number }}
           {{/pull_requests.dependencies}}
           {{/pull_requests.dependencies.length}}
+    - name: "Github Release"
+      uses: softprops/action-gh-release@91409e712cf565ce9eff10c87a8d1b11b81757ae #v1
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      with:
+        tag_name: "v${{ steps.params.outputs.version }}"
+        name: "v${{ steps.params.outputs.version }}"
+        files: dist/*
+        body: ${{ steps.content.outputs.content }}
     - name: Increment Version
       run: |
         python .github/scripts/increment_version.py
@@ -98,12 +106,3 @@ jobs:
         labels: |
           release
         reviewers: raynigon
-    - name: "Github Release"
-      uses: softprops/action-gh-release@91409e712cf565ce9eff10c87a8d1b11b81757ae #v1
-      env:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      with:
-        tag_name: "v${{ steps.params.outputs.version }}"
-        name: "v${{ steps.params.outputs.version }}"
-        files: dist/*
-        body: ${{ steps.content.outputs.content }}
