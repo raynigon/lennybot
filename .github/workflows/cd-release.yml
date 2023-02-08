@@ -84,15 +84,6 @@ jobs:
           * {{ title }} PR: #{{ number }}
           {{/pull_requests.dependencies}}
           {{/pull_requests.dependencies.length}}
-    - name: "Github Release"
-      uses: softprops/action-gh-release@91409e712cf565ce9eff10c87a8d1b11b81757ae #v1
-      env:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      with:
-        tag_name: "v${{ steps.params.outputs.version }}"
-        name: "v${{ steps.params.outputs.version }}"
-        files: dist/*
-        body: ${{ steps.content.outputs.content }}
     - name: Increment Version
       run: |
         python .github/scripts/increment_version.py
@@ -107,3 +98,12 @@ jobs:
         labels: |
           release
         reviewers: raynigon
+    - name: "Github Release"
+      uses: softprops/action-gh-release@91409e712cf565ce9eff10c87a8d1b11b81757ae #v1
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      with:
+        tag_name: "v${{ steps.params.outputs.version }}"
+        name: "v${{ steps.params.outputs.version }}"
+        files: dist/*
+        body: ${{ steps.content.outputs.content }}
