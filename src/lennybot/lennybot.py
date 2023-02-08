@@ -5,7 +5,7 @@ from .actions import *
 from .service import PlanService, ApplyService, GitHubService
 import pickle
 import logging
-from git import Repo
+from git import Repo, GitDB
 from datetime import datetime
 
 class LennyBot:
@@ -50,7 +50,7 @@ class LennyBot:
             self._branch_name = f"{self._branch_name}-"
         self._branch_name = f"{self._branch_name}{now}"
         self._log.debug(f"Determined branch name {self._branch_name}")
-        self._repo = Repo("./")
+        self._repo = Repo("./", odbt=GitDB)
         self._log.debug(f"Initialized repository")
         head = self._repo.create_head(self._branch_name)
         self._log.debug(f"Created Head")
