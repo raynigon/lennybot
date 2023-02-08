@@ -1,4 +1,4 @@
-FROM python:3 as build
+FROM python:3-bullseye as build
 
 RUN python -m pip install --upgrade pip && \
     pip install setuptools wheel twine build && \
@@ -7,7 +7,7 @@ WORKDIR /build/
 COPY . .
 RUN python3 -m build
 
-FROM python:3
+FROM python:3-bullseye
 
 RUN pip install --upgrade pip
 WORKDIR /workspace/

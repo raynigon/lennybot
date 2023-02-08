@@ -4,6 +4,7 @@ from .model import LennyBotState
 from .actions import *
 from .service import PlanService, ApplyService, GitHubService
 import pickle
+import logging
 from git import Repo
 from datetime import datetime
 
@@ -11,6 +12,7 @@ class LennyBot:
 
     def __init__(self, config_path):
         self._config = LennyBotConfig(config_path)
+        self._log = logging.getLogger(self.__class__.__name__)
         self._github_service = GitHubService(self._config)
         self._plan_service = PlanService(self._github_service, self._config)
         self._apply_service = ApplyService()
@@ -18,31 +20,45 @@ class LennyBot:
         self._branch_name = None
 
     def plan(self) -> LennyBotPlan:
+        self._log.info("Start planning...")
         state = LennyBotState(self._config)
-        return self._plan_service.plan(state)
+        plan = self._plan_service.plan(state)
+        self._log.info(f"Created plan with {len(plan.actions)} actions")
+        return plan
 
     def apply(self, plan: LennyBotPlan):
-        return self._apply_service.apply(plan)
+        self._log.info("Start apply...")
+        result = self._apply_service.apply(plan)
+        self._log.info(f"Applied {len(plan.actions)} actions")
+        return result
 
     def load_plan(self, filename: str) -> LennyBotPlan:
+        self._log.debug(f"Load plan from '{filename}'")
         with open(filename, "rb") as file_ptr:
             return pickle.load(file_ptr)
 
     def save_plan(self, filename: str, plan: LennyBotPlan):
+        self._log.debug(f"Store plan to '{filename}'")
         with open(filename, "wb") as file_ptr:
             pickle.dump(plan, file_ptr)
 
     def ci_setup(self):
+        self._log.debug(f"Setup CI")
         now = datetime.now().strftime("%Y%m%d%H%M%S")
         self._branch_name = f"{self._config.github_pr.branch_prefix}"
         if not self._branch_name.endswith("-"):
             self._branch_name = f"{self._branch_name}-"
         self._branch_name = f"{self._branch_name}{now}"
+        self._log.debug(f"Determined branch name {self._branch_name}")
         self._repo = Repo("./")
+        self._log.debug(f"Initialized repository")
         head = self._repo.create_head(self._branch_name)
+        self._log.debug(f"Created Head")
         head.checkout()
+        self._log.info(f"Working branch is {self._branch_name}")
 
     def ci_finalize(self, plan: LennyBotPlan, result):
+        self._log.debug(f"Finalize CI")
         if not self._repo.index.diff(None) and not self._repo.untracked_files:
             return
         title = f"Lennybot updated {len(plan.applications)} applications"

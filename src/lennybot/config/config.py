@@ -1,6 +1,7 @@
 from typing import List
 import yaml
 import os
+import logging
 
 CONFIGURATION_OPTIONS = {
     "github": {
@@ -230,6 +231,7 @@ class LennyBotGithubPr:
 class LennyBotConfig:
 
     def __init__(self, filename) -> None:
+        self._log = None
         with open(filename) as file_ptr:
             self._data = yaml.safe_load(file_ptr)
         self._state_file = None
@@ -237,10 +239,16 @@ class LennyBotConfig:
         self._github_pr = LennyBotGithubPr()
         self._applications = []
         self._parse()
+        self._logging()
 
     def _parse(self):
         self._parse_data(CONFIGURATION_OPTIONS, self._data, self)
         self._parse_env()
+    
+    def _logging(self):
+        logging.basicConfig(level=logging.DEBUG,format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
+        self._log = logging.getLogger(self.__class__.__name__)
+        self._log.debug("Logging was configured")
 
     def _parse_data(self, schema, data, target):
         for name, property in schema.items():

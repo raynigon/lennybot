@@ -18,8 +18,7 @@ def _version()->str:
 def _find_config(args):
     if args.config is not None:
         for item in args.config:
-            if item.startswith("config.file"):
-                return item.split("=")[1]
+            return item
     if "LB_CONFIG_FILE" in os.environ.keys():
         return os.environ["LB_CONFIG_FILE"]
     if os.path.exists("config.yaml"):
