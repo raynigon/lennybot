@@ -8,7 +8,7 @@ class RemoveChecksumsAction(IAction):
         self._name = name
         self._source_version = source_version
         self._target_version = target_version
-        self._target_file = config.target_file
+        self._target_file = config.target
 
     @property
     def application(self) -> str:

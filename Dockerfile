@@ -9,7 +9,7 @@ RUN python3 -m build
 
 FROM python:3-alpine
 
-RUN apk add git
+RUN apk add git && pip install --upgrade pip
 WORKDIR /workspace/
 COPY --from=build /build/dist/*.whl .
 RUN pip install *.whl && rm *.whl
