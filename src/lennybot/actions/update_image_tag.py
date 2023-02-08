@@ -14,7 +14,7 @@ class UpdateImageTagAction(IAction):
             self._tag_pattern = config.tag_pattern
         else:
             self._tag_pattern = "{{version}}"
-            
+
     @property
     def application(self) -> str:
         return self._name

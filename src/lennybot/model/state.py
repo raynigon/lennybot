@@ -33,7 +33,7 @@ class LennyBotState:
             self._data[name] = {
                 "version": version
             }
-    
+
     def is_valid(self):
         return self._hash == self._calculate_hash()
 
