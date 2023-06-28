@@ -1,3 +1,4 @@
+import logging
 from typing import List
 from .source import create_source
 from ..actions import IAction, create_action
@@ -45,6 +46,7 @@ class LennyBotApplication:
 class PlanService:
 
     def __init__(self, github: GitHubService, config: LennyBotConfig) -> None:
+        self._log = logging.getLogger(self.__class__.__name__)
         self._github = github
         self._applications:List[LennyBotApplication] = []
         for app_config in config.applications:
@@ -59,7 +61,7 @@ class PlanService:
                 if app.should_update():
                     actions.extend(app.create_actions())
             except Exception as exception:
-                print(f"Exception during action planning for {app.name}")
+                self._log.error(f"Exception during action planning for {app.name}")
                 raise exception
         return LennyBotPlan(state, actions)
 

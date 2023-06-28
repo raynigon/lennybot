@@ -2,6 +2,7 @@ import sys
 from .lennybot import LennyBot
 import os
 import argparse
+import logging
 
 
 def _version()->str:
@@ -51,6 +52,7 @@ def main() -> int:
     args = _arg_parser()
     config_file = _find_config(args)
     app = LennyBot(config_file)
+
     # Execute plan only
     if args.action == "plan":
         plan = app.plan()
@@ -69,6 +71,6 @@ def main() -> int:
         result = app.apply(plan)
         app.ci_finalize(plan, result)
     else:
-        print("Unexpected Arguments")
+        logging.error("Unexpected Arguments", args)
         return 1
     return 0

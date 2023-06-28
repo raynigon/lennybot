@@ -42,6 +42,16 @@ CONFIGURATION_OPTIONS = {
             }
         }
     },
+    "logging": {
+        "type": "object",
+        "properties": {
+            "level": {
+                "type": "string",
+                "required": False,
+                "attribute": "_logging_level"
+            }
+        }
+    },
     "applications": {
         "type": "list",
         "required": True,
@@ -237,16 +247,19 @@ class LennyBotConfig:
         self._state_file = None
         self._github_token = None
         self._github_pr = LennyBotGithubPr()
+        self._logging_level = "INFO"
         self._applications = []
         self._parse()
-        self._logging()
+        self._configure_logging()
 
     def _parse(self):
         self._parse_data(CONFIGURATION_OPTIONS, self._data, self)
         self._parse_env()
 
-    def _logging(self):
-        logging.basicConfig(level=logging.DEBUG,format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
+    def _configure_logging(self):
+        logging_level = logging._nameToLevel.get(self._logging_level, logging.DEBUG)
+        logging.basicConfig(level=logging_level,
+                            format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug("Logging was configured")
 
