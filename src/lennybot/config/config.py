@@ -73,6 +73,20 @@ CONFIGURATION_OPTIONS = {
                     },
                 }
             },
+            "check": {
+                "type": "list",
+                "class": "LennyBotCheckConfig",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "attribute": "_type"
+                    },
+                    "imagePattern": {
+                        "type": "string",
+                        "attribute": "_image_pattern"
+                    }
+                }
+            },
             "actions": {
                 "type": "list",
                 "class": "LennyBotActionConfig",
@@ -140,6 +154,19 @@ class LennyBotSourceConfig:
     def regex(self) -> str:
         return self._regex
 
+class LennyBotCheckConfig:
+
+    def __init__(self) -> None:
+        self._type = None
+        self._image_pattern = None
+
+    @property
+    def type(self) -> str:
+        return self._type
+    
+    @property
+    def image_pattern(self) -> str:
+        return self._image_pattern
 
 class LennyBotActionConfig:
 
@@ -308,3 +335,4 @@ class LennyBotConfig:
     @property
     def github_pr(self) -> LennyBotGithubPr:
         return self._github_pr
+

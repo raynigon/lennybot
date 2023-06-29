@@ -1,0 +1,21 @@
+state:
+  file: "versions.state.yaml"
+github:
+  pr:
+    enabled: true
+    repository: "repo/cloud-images"
+    branchPrefix: "lennybot-"
+applications:
+  - name: argocd
+    source:
+      type: "github"
+      repository: "argoproj/argo-cd"
+      regex: "v([0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,})"
+    check:
+      - type: "docker-image-available"
+        imagePattern: "quay.io/argoproj/argocd:v{{version}}"
+    actions:
+      - type: "update-dockerfile"
+        targetFile: "images/quay-io/argoproj/argocd/Dockerfile"
+        image: "quay.io/argoproj/argocd"
+        valuePattern: "v{{version}}"
