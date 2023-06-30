@@ -130,3 +130,7 @@ dmypy.json
 
 .vscode/
 .DS_Store
+
+# Draw.io
+*.drawio.bkp
+*.drawio.dtmp
