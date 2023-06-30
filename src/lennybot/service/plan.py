@@ -16,16 +16,12 @@ class LennyBotApplication:
     def __init__(self, config: LennyBotAppConfig, github) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._name = config.name
+        self._config = config
         self._source = create_source(self._name, config.source, github)
         self._checks = []
         self._action_configs = config.actions
         self._current_version = None
         self._latest_version = None
-        ####
-        for config in config._checks:
-            check = create_check(
-                self.name, self._current_version, self._latest_version, config)
-            self._checks.append(check)
 
     @property
     def name(self) -> str:
@@ -34,6 +30,10 @@ class LennyBotApplication:
     def init(self, state: LennyBotState):
         self._current_version = state.current_version(self._name)
         self._latest_version = self._source.latest_version()
+        for config in self._config._checks:
+            check = create_check(
+                self.name, self._current_version, self._latest_version, config)
+            self._checks.append(check)
 
     def should_update(self) -> bool:
         if self._latest_version is None:
