@@ -11,7 +11,7 @@ applications:
       type: "github"
       repository: "argoproj/argo-cd"
       regex: "v([0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,})"
-    check:
+    checks:
       - type: "docker-image-available"
         imagePattern: "quay.io/argoproj/argocd:v{{version}}"
     actions:

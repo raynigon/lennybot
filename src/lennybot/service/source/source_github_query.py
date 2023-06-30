@@ -1,8 +1,9 @@
-from .isource import ISource
-from ..github import GitHubService
-from ...helper import semver_2_vc
-from ...config import LennyBotSourceConfig
 import re
+
+from ...config import LennyBotSourceConfig
+from ...helper import semver_2_vc
+from ..github import GitHubService
+from .isource import ISource
 
 
 class GithubQuerySource(ISource):

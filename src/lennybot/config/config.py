@@ -1,7 +1,8 @@
-from typing import List
-import yaml
-import os
 import logging
+import os
+from typing import List
+
+import yaml
 
 CONFIGURATION_OPTIONS = {
     "github": {
@@ -73,9 +74,10 @@ CONFIGURATION_OPTIONS = {
                     },
                 }
             },
-            "check": {
+            "checks": {
                 "type": "list",
                 "class": "LennyBotCheckConfig",
+                "attribute": "_checks",
                 "properties": {
                     "type": {
                         "type": "string",
@@ -222,6 +224,7 @@ class LennyBotAppConfig:
     def __init__(self) -> None:
         self._name = None
         self._source = LennyBotSourceConfig()
+        self._checks = []
         self._actions = []
 
     @property
@@ -292,6 +295,7 @@ class LennyBotConfig:
             setattr(target, attribute_name, property_value)
 
     def _parse_nested_data(self, name, property, data, target):
+        attribute_name = None
         config_type = property["type"]
         if "attribute" in property:
             attribute_name = property["attribute"]

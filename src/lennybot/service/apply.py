@@ -1,7 +1,8 @@
-from typing import List
 import logging
+from typing import List
 
 from ..model.plan import LennyBotPlan
+
 
 class ApplyService:
 

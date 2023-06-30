@@ -1,7 +1,10 @@
-import yaml
-import os
 import hashlib
+import os
+
+import yaml
+
 from ..config.config import LennyBotConfig
+
 
 class LennyBotState:
 

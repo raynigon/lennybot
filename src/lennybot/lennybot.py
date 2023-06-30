@@ -1,14 +1,17 @@
-from .model.plan import LennyBotPlan
+import logging
+import os
+import pickle
+import subprocess
+from datetime import datetime
+
+from git import GitDB, Repo
+
+from .actions import *
 from .config import LennyBotConfig
 from .model import LennyBotState
-from .actions import *
-from .service import PlanService, ApplyService, GitHubService
-import pickle
-import logging
-from git import Repo, GitDB
-from datetime import datetime
-import subprocess
-import os
+from .model.plan import LennyBotPlan
+from .service import ApplyService, GitHubService, PlanService
+
 
 class LennyBot:
 

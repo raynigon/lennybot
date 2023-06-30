@@ -1,6 +1,8 @@
+import requests
+
 from ..config.config import LennyBotCheckConfig
 from .icheck import ICheck
-import requests
+
 
 class DockerImageAvailableCheck(ICheck):
 

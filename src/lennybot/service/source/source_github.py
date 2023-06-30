@@ -1,8 +1,10 @@
-from ...config import LennyBotSourceConfig
-from .isource import ISource
-from ..github import GitHubService
 import re
+
 import requests
+
+from ...config import LennyBotSourceConfig
+from ..github import GitHubService
+from .isource import ISource
 
 
 class GithubSource(ISource):
