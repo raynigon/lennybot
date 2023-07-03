@@ -1,7 +1,8 @@
+from ...config import LennyBotSourceConfig
+from .isource import ISource
 from .source_github import GithubSource
 from .source_github_query import GithubQuerySource
-from .isource import ISource
-from ...config import LennyBotSourceConfig
+
 
 def create_source(name, config: LennyBotSourceConfig, github) -> ISource:
     source_type = config.type

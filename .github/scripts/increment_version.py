@@ -1,5 +1,6 @@
-import yaml
 import sys
+
+import yaml
 
 with open("version.txt") as fp:
     version = fp.read()

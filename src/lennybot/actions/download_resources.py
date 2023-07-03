@@ -1,6 +1,8 @@
+import requests
+
 from ..config.config import LennyBotActionConfig
 from .iaction import IAction
-import requests
+
 
 class DownloadResourcesAction(IAction):
 

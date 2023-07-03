@@ -1,17 +1,24 @@
 import logging
 from typing import List
-from .source import create_source
+
+from lennybot.check import create_check
+
 from ..actions import IAction, create_action
-from ..config import LennyBotConfig, LennyBotAppConfig
-from ..model import LennyBotState, LennyBotPlan
+from ..config import LennyBotAppConfig, LennyBotConfig
 from ..helper import semver_2_vc
+from ..model import LennyBotPlan, LennyBotState
 from .github import GitHubService
+from .source import create_source
+
 
 class LennyBotApplication:
 
     def __init__(self, config: LennyBotAppConfig, github) -> None:
+        self._log = logging.getLogger(self.__class__.__name__)
         self._name = config.name
+        self._config = config
         self._source = create_source(self._name, config.source, github)
+        self._checks = []
         self._action_configs = config.actions
         self._current_version = None
         self._latest_version = None
@@ -23,6 +30,10 @@ class LennyBotApplication:
     def init(self, state: LennyBotState):
         self._current_version = state.current_version(self._name)
         self._latest_version = self._source.latest_version()
+        for config in self._config._checks:
+            check = create_check(
+                self.name, self._current_version, self._latest_version, config)
+            self._checks.append(check)
 
     def should_update(self) -> bool:
         if self._latest_version is None:
@@ -31,7 +42,15 @@ class LennyBotApplication:
             return False
         current_vc = semver_2_vc(self._current_version)
         latest_vc = semver_2_vc(self._latest_version)
-        return latest_vc > current_vc
+
+        if current_vc >= latest_vc:
+            return False
+
+        for check in self._checks:
+            if not check.check():
+                self._log.info("Check {} failed for application {}", check.__class__.__name__, self.name)
+                return False
+        return True
 
     def create_actions(self) -> List[IAction]:
         if self._latest_version is None:
@@ -64,5 +83,3 @@ class PlanService:
                 self._log.error(f"Exception during action planning for {app.name}")
                 raise exception
         return LennyBotPlan(state, actions)
-
-

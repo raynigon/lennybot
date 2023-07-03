@@ -1,6 +1,8 @@
+import yaml
+
 from ..config.config import LennyBotActionConfig
 from .iaction import IAction
-import yaml
+
 
 class RemoveChecksumsAction(IAction):
 

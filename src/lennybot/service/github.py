@@ -1,11 +1,12 @@
 from typing import Dict, List
 
+import requests
+from github import Github
 from github.PullRequest import PullRequest
 from github.Repository import Repository
 
 from ..config import LennyBotConfig
-import requests
-from github import Github
+
 
 class GitHubService:
 

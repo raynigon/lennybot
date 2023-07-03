@@ -1,8 +1,8 @@
-import sys
-from .lennybot import LennyBot
-import os
 import argparse
-import logging
+import os
+import sys
+
+from .lennybot import LennyBot
 
 
 def _version()->str:

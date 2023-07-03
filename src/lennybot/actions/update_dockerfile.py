@@ -1,4 +1,5 @@
 import re
+
 from ..config.config import LennyBotActionConfig
 from .iaction import IAction
 

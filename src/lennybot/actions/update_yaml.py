@@ -1,9 +1,12 @@
-from ..config.config import LennyBotActionConfig
-from .iaction import IAction
 from types import SimpleNamespace
+
+from yamlpath import Processor
 from yamlpath.common import Parsers
 from yamlpath.wrappers import ConsolePrinter
-from yamlpath import Processor
+
+from ..config.config import LennyBotActionConfig
+from .iaction import IAction
+
 
 class UpdateYamlAction(IAction):
 

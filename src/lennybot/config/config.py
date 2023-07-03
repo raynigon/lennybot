@@ -1,7 +1,8 @@
-from typing import List
-import yaml
-import os
 import logging
+import os
+from typing import List
+
+import yaml
 
 CONFIGURATION_OPTIONS = {
     "github": {
@@ -83,6 +84,21 @@ CONFIGURATION_OPTIONS = {
                     },
                 }
             },
+            "checks": {
+                "type": "list",
+                "class": "LennyBotCheckConfig",
+                "attribute": "_checks",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "attribute": "_type"
+                    },
+                    "imagePattern": {
+                        "type": "string",
+                        "attribute": "_image_pattern"
+                    }
+                }
+            },
             "actions": {
                 "type": "list",
                 "class": "LennyBotActionConfig",
@@ -151,6 +167,21 @@ class LennyBotSourceConfig:
         return self._regex
 
 
+class LennyBotCheckConfig:
+
+    def __init__(self) -> None:
+        self._type = None
+        self._image_pattern = None
+
+    @property
+    def type(self) -> str:
+        return self._type
+
+    @property
+    def image_pattern(self) -> str:
+        return self._image_pattern
+
+
 class LennyBotActionConfig:
 
     def __init__(self) -> None:
@@ -200,11 +231,13 @@ class LennyBotActionConfig:
     def value_pattern(self) -> str:
         return self._value_pattern
 
+
 class LennyBotAppConfig:
 
     def __init__(self) -> None:
         self._name = None
         self._source = LennyBotSourceConfig()
+        self._checks = []
         self._actions = []
 
     @property
@@ -218,6 +251,7 @@ class LennyBotAppConfig:
     @property
     def actions(self) -> List[LennyBotActionConfig]:
         return self._actions
+
 
 class LennyBotGithubPr:
 
@@ -238,6 +272,7 @@ class LennyBotGithubPr:
     def branch_prefix(self) -> str:
         return self._branch_prefix
 
+
 class LennyBotConfig:
 
     def __init__(self, filename) -> None:
@@ -257,9 +292,12 @@ class LennyBotConfig:
         self._parse_env()
 
     def _configure_logging(self):
-        logging_level = logging._nameToLevel.get(self._logging_level, logging.DEBUG)
-        logging.basicConfig(level=logging_level,
-                            format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
+        logging_level = logging._nameToLevel.get(
+            self._logging_level,
+            logging.DEBUG)
+        logging.basicConfig(
+            level=logging_level,
+            format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug("Logging was configured")
 
@@ -278,6 +316,7 @@ class LennyBotConfig:
             setattr(target, attribute_name, property_value)
 
     def _parse_nested_data(self, name, property, data, target):
+        attribute_name = None
         config_type = property["type"]
         if "attribute" in property:
             attribute_name = property["attribute"]
