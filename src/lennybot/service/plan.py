@@ -83,5 +83,3 @@ class PlanService:
                 self._log.error(f"Exception during action planning for {app.name}")
                 raise exception
         return LennyBotPlan(state, actions)
-
-

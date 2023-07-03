@@ -32,9 +32,9 @@ class DockerImageAvailableCheck(ICheck):
         return self._target_version
 
     def check(self) -> bool:
-        image_path = self._image_pattern.replace("{{version}}",self.target_version)
+        image_path = self._image_pattern.replace("{{version}}", self.target_version)
         try:
-            subprocess.check_call(["docker", "pull",image_path])
+            subprocess.check_call(["docker", "pull", image_path], shell=False)
         except subprocess.CalledProcessError as error:
             self._log.debug(
                 "Subprocess call failed for check {} on application {}\n{}",
