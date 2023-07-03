@@ -14,3 +14,4 @@ class ICheck:
 
     def check(self) -> bool:
         pass
+    

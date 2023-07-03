@@ -166,6 +166,7 @@ class LennyBotSourceConfig:
     def regex(self) -> str:
         return self._regex
 
+
 class LennyBotCheckConfig:
 
     def __init__(self) -> None:
@@ -175,10 +176,11 @@ class LennyBotCheckConfig:
     @property
     def type(self) -> str:
         return self._type
-    
+
     @property
     def image_pattern(self) -> str:
         return self._image_pattern
+
 
 class LennyBotActionConfig:
 
@@ -229,6 +231,7 @@ class LennyBotActionConfig:
     def value_pattern(self) -> str:
         return self._value_pattern
 
+
 class LennyBotAppConfig:
 
     def __init__(self) -> None:
@@ -249,6 +252,7 @@ class LennyBotAppConfig:
     def actions(self) -> List[LennyBotActionConfig]:
         return self._actions
 
+
 class LennyBotGithubPr:
 
     def __init__(self) -> None:
@@ -267,6 +271,7 @@ class LennyBotGithubPr:
     @property
     def branch_prefix(self) -> str:
         return self._branch_prefix
+
 
 class LennyBotConfig:
 
@@ -352,4 +357,3 @@ class LennyBotConfig:
     @property
     def github_pr(self) -> LennyBotGithubPr:
         return self._github_pr
-

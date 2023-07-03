@@ -1,5 +1,3 @@
-
-
 def semver_2_vc(version):
     if version is None:
         return 0
