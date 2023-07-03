@@ -42,7 +42,7 @@ class LennyBotApplication:
             return False
         current_vc = semver_2_vc(self._current_version)
         latest_vc = semver_2_vc(self._latest_version)
-        
+
         if current_vc >= latest_vc:
             return False
 

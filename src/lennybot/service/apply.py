@@ -18,6 +18,8 @@ class ApplyService:
                 action.run()
                 state.update_version(action.application, action.target_version)
             except Exception as exception:
-                self._log.error(f"Exception during action execution for {action.application}")
+                self._log.error(
+                    f"Exception during action execution for {action.application}"
+                    )
                 raise exception
         state.save()

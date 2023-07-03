@@ -292,9 +292,12 @@ class LennyBotConfig:
         self._parse_env()
 
     def _configure_logging(self):
-        logging_level = logging._nameToLevel.get(self._logging_level, logging.DEBUG)
-        logging.basicConfig(level=logging_level,
-                            format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
+        logging_level = logging._nameToLevel.get(
+            self._logging_level,
+            logging.DEBUG)
+        logging.basicConfig(
+            level=logging_level,
+            format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug("Logging was configured")
 
