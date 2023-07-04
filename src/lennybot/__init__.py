@@ -5,7 +5,7 @@ import sys
 from .lennybot import LennyBot
 
 
-def _version()->str:
+def _version() -> str:
     if "__version__" in locals():
         return locals()["__version__"]
     if "__version__" in globals():
@@ -27,7 +27,8 @@ def _find_config(args):
     if os.path.exists("config.yml"):
         return "config.yml"
     raise Exception(
-        "Configuration file not found, create 'config.yaml' or set LB_CONFIG_FILE to point to the config file")
+        "Configuration file not found, create 'config.yaml' or set LB_CONFIG_FILE to point to the config file"
+    )
 
 
 def _arg_parser():
@@ -35,16 +36,35 @@ def _arg_parser():
         prog="lennybot",
         description="""
             The Lennybot checks for updates, creates a plan to update resources and can also apply this plan.
-        """)
-    parser.add_argument('action', metavar='action', type=str, nargs='?',
-                        choices=['ci', 'plan', 'apply'], default='ci',
-                        help='The action which should be executed. Has to be one of "plan", "apply" or "ci". Default is "ci"')
-    parser.add_argument('-p', '--plan', dest='plan', type=str, required=False,
-                        help='The filename of plan which should be saved or loaded')
-    parser.add_argument('-c', '--config', dest='config', type=str, required=False, action='append',
-                        help='A config value in the format key.subkey=value')
-    parser.add_argument('-v', '--version',
-                        action='version', version=_version())
+        """,
+    )
+    parser.add_argument(
+        "action",
+        metavar="action",
+        type=str,
+        nargs="?",
+        choices=["ci", "plan", "apply"],
+        default="ci",
+        help='The action which should be executed. Has to be one of "plan", "apply" or "ci". Default is "ci"',
+    )
+    parser.add_argument(
+        "-p",
+        "--plan",
+        dest="plan",
+        type=str,
+        required=False,
+        help="The filename of plan which should be saved or loaded",
+    )
+    parser.add_argument(
+        "-c",
+        "--config",
+        dest="config",
+        type=str,
+        required=False,
+        action="append",
+        help="A config value in the format key.subkey=value",
+    )
+    parser.add_argument("-v", "--version", action="version", version=_version())
     return parser.parse_args()
 
 

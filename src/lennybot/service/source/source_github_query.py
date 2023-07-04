@@ -7,7 +7,6 @@ from .isource import ISource
 
 
 class GithubQuerySource(ISource):
-
     def __init__(self, name, config: LennyBotSourceConfig, github: GitHubService) -> None:
         self._name = name
         self._github = github
@@ -33,5 +32,3 @@ class GithubQuerySource(ISource):
             raise Exception("No valid version was found")
         results.sort(key=semver_2_vc)
         return results[-1]
-
-        

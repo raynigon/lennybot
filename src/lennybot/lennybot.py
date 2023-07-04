@@ -14,7 +14,6 @@ from .service import ApplyService, GitHubService, PlanService
 
 
 class LennyBot:
-
     def __init__(self, config_path):
         self._config = LennyBotConfig(config_path)
         self._log = logging.getLogger(self.__class__.__name__)
@@ -82,6 +81,6 @@ class LennyBot:
         self._repo.config_writer().set_value("user", "email", "lennybot@raynigon.com").release()
         self._repo.git.add(A=True)
         self._repo.git.commit(m=title)
-        self._repo.git.push('--set-upstream', 'origin', self._branch_name)
+        self._repo.git.push("--set-upstream", "origin", self._branch_name)
         # Create Pull Request
         self._github_service.create_pr(self._branch_name, title, body)

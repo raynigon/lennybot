@@ -8,7 +8,6 @@ from .isource import ISource
 
 
 class GithubSource(ISource):
-
     def __init__(self, name, config: LennyBotSourceConfig, github: GitHubService) -> None:
         self._name = name
         self._github = github
@@ -30,5 +29,3 @@ class GithubSource(ISource):
         if len(match.groups()) < 1:
             raise Exception(f"Missing Group in regex pattern, Pattern: {self._version_regex}, Tag: {tag_name}")
         return match.group(1)
-
-        

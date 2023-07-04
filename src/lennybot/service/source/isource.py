@@ -1,6 +1,4 @@
-
 class ISource:
-
     @property
     def application(self) -> str:
         pass

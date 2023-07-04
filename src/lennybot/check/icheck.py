@@ -1,5 +1,4 @@
 class ICheck:
-
     @property
     def application(self) -> str:
         pass

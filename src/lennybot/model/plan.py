@@ -1,5 +1,3 @@
-
-
 from typing import Any, List
 
 from ..actions.iaction import IAction
@@ -7,7 +5,6 @@ from ..model.state import LennyBotState
 
 
 class LennyBotPlan:
-
     def __init__(self, state: LennyBotState, actions: List[IAction]) -> None:
         self._state = state
         self._actions = actions

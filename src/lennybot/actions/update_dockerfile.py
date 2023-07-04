@@ -5,7 +5,6 @@ from .iaction import IAction
 
 
 class UpdateDockerfileAction(IAction):
-
     FROM_PATTERN = r"FROM ([^:]*):[^\s]*(.*)"
 
     def __init__(self, name, source_version, target_version, config: LennyBotActionConfig) -> None:

@@ -9,7 +9,6 @@ from ..config import LennyBotConfig
 
 
 class GitHubService:
-
     def __init__(self, config: LennyBotConfig):
         self._config = config
         self._token = self._config.github_token
@@ -35,7 +34,7 @@ class GitHubService:
         if self._github is None:
             raise Exception("GitHub is not configured")
         repo = self._github.get_repo(self._config.github_pr.repository)
-        new_pull = repo.create_pull(title, body, repo.default_branch , branch_name)
+        new_pull = repo.create_pull(title, body, repo.default_branch, branch_name)
         labels = self._get_or_create_labels(repo)
         new_pull.add_to_labels(*labels)
         pulls = self._find_own_pulls()
@@ -43,9 +42,9 @@ class GitHubService:
             if new_pull.id == pull.id:
                 continue
             pull.as_issue().create_comment(f"Superseded by #{new_pull.number}")
-            pull.edit(state = "closed")
+            pull.edit(state="closed")
 
-    def _find_own_pulls(self)->List[PullRequest]:
+    def _find_own_pulls(self) -> List[PullRequest]:
         repo = self._github.get_repo(self._config.github_pr.repository)
         pulls = repo.get_pulls("open")
         result = []
@@ -54,7 +53,7 @@ class GitHubService:
                 result.append(pull)
         return result
 
-    def _headers(self)->Dict:
+    def _headers(self) -> Dict:
         headers = {}
         if self._token is not None:
             headers["Authorization"] = f"Bearer {self._token}"
