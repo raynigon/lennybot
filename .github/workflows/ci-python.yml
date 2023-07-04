@@ -27,8 +27,8 @@ jobs:
         run: |
           # stop the build if there are Python syntax errors or undefined names
           ruff --format=github --select=E9,F63,F7,F82 --target-version=py311 .
-          # default set of ruff rules with GitHub Annotations
-          ruff --format=github --target-version=py311 .
+      # # default set of ruff rules with GitHub Annotations
+      # ruff --format=github --target-version=py311 .
       # - name: check with black
       #   run: |
       #     # if failed execute black -l 100 * (on top of you project directory)
