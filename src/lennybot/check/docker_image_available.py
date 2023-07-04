@@ -1,6 +1,8 @@
 import logging
-import requests
 import subprocess
+
+import requests
+
 from ..config.config import LennyBotCheckConfig
 from .icheck import ICheck
 
