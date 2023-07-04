@@ -1,6 +1,6 @@
 import argparse
 import os
-import sys
+import logging
 
 from .lennybot import LennyBot
 
