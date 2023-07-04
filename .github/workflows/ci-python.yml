@@ -3,17 +3,10 @@ name: Python package
 on: [push]
 
 jobs:
-  lint:
-
+  lint_black:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-      - uses: psf/black@stable
-        with:
-            options: "--check --verbose"
-            src: "./src"
-            version: "~= 22.0"
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
@@ -21,23 +14,43 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff pytest black isort
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install black
+          pip install -r requirements.txt
+      - uses: psf/black@stable
+        with:
+            options: "--check --verbose"
+            src: "./src"
+            version: "~= 22.0"
+  lint_ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+          pip install -r requirements.txt
       - name: Lint with ruff
         run: |
           # stop the build if there are Python syntax errors or undefined names
           ruff --format=github --select=E9,F63,F7,F82 --target-version=py311 .
-      # # default set of ruff rules with GitHub Annotations
-      # ruff --format=github --target-version=py311 .
-      # - name: check with black
-      #   run: |
-      #     # if failed execute black -l 100 * (on top of you project directory)
-      #     black -l 100 src/* --check
-      # - name: Lint with pylint
-      #   run: |
-      #     # run pylint
-      #     source venv/bin/activate
-      #     pylint **/*.py  # ... Some more conditional arguments
-      # - name: Test with pytest
-      #   run: |
-      #     pytest
+  lint_isort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install isort
+          pip install -r requirements.txt
+      - name: Lint with ruff
+        run: |
+          isort **/*.py -c
