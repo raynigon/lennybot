@@ -3,4 +3,4 @@ line-length = 120
 target-version = ['py311']
 
 [tool.isort]
-line-length = 120
+line_length = 120
