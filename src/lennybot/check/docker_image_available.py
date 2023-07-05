@@ -1,18 +1,14 @@
 import logging
-import requests
 import subprocess
+
+import requests
+
 from ..config.config import LennyBotCheckConfig
 from .icheck import ICheck
 
 
 class DockerImageAvailableCheck(ICheck):
-
-    def __init__(
-            self,
-            application_name,
-            source_version,
-            target_version,
-            config: LennyBotCheckConfig) -> None:
+    def __init__(self, application_name, source_version, target_version, config: LennyBotCheckConfig) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._application_name = application_name
         self._source_version = source_version
@@ -38,6 +34,9 @@ class DockerImageAvailableCheck(ICheck):
         except subprocess.CalledProcessError as error:
             self._log.debug(
                 "Subprocess call failed for check {} on application {}\n{}",
-                self.__class__.__name__, self.application, error)
+                self.__class__.__name__,
+                self.application,
+                error,
+            )
             return False
         return True

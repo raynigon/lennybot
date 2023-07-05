@@ -8,50 +8,25 @@ CONFIGURATION_OPTIONS = {
     "github": {
         "type": "object",
         "properties": {
-            "token": {
-                "type": "string",
-                "required": True,
-                "attribute": "_github_token"
-            },
+            "token": {"type": "string", "required": True, "attribute": "_github_token"},
             "pr": {
                 "type": "object",
                 "attribute": "_github_pr",
                 "properties": {
-                    "enabled": {
-                        "type": "bool",
-                        "attribute": "_enabled"
-                    },
-                    "repository": {
-                        "type": "bool",
-                        "attribute": "_repository"
-                    },
-                    "branchPrefix": {
-                        "type": "bool",
-                        "attribute": "_branch_prefix"
-                    },
-                }
-            }
-        }
+                    "enabled": {"type": "bool", "attribute": "_enabled"},
+                    "repository": {"type": "bool", "attribute": "_repository"},
+                    "branchPrefix": {"type": "bool", "attribute": "_branch_prefix"},
+                },
+            },
+        },
     },
     "state": {
         "type": "object",
-        "properties": {
-            "file": {
-                "type": "string",
-                "required": True,
-                "attribute": "_state_file"
-            }
-        }
+        "properties": {"file": {"type": "string", "required": True, "attribute": "_state_file"}},
     },
     "logging": {
         "type": "object",
-        "properties": {
-            "level": {
-                "type": "string",
-                "required": False,
-                "attribute": "_logging_level"
-            }
-        }
+        "properties": {"level": {"type": "string", "required": False, "attribute": "_logging_level"}},
     },
     "applications": {
         "type": "list",
@@ -59,96 +34,47 @@ CONFIGURATION_OPTIONS = {
         "class": "LennyBotAppConfig",
         "attribute": "_applications",
         "properties": {
-            "name": {
-                "type": "string",
-                "required": True,
-                "attribute": "_name"
-            },
+            "name": {"type": "string", "required": True, "attribute": "_name"},
             "source": {
                 "type": "object",
                 "attribute": "_source",
                 "properties": {
-                    "type": {
-                        "type": "string",
-                        "required": True,
-                        "attribute": "_type"
-                    },
-                    "repository": {
-                        "type": "string",
-                        "required": True,
-                        "attribute": "_repository"
-                    },
-                    "regex": {
-                        "type": "string",
-                        "attribute": "_regex"
-                    },
-                }
+                    "type": {"type": "string", "required": True, "attribute": "_type"},
+                    "repository": {"type": "string", "required": True, "attribute": "_repository"},
+                    "regex": {"type": "string", "attribute": "_regex"},
+                },
             },
             "checks": {
                 "type": "list",
                 "class": "LennyBotCheckConfig",
                 "attribute": "_checks",
                 "properties": {
-                    "type": {
-                        "type": "string",
-                        "attribute": "_type"
-                    },
-                    "imagePattern": {
-                        "type": "string",
-                        "attribute": "_image_pattern"
-                    }
-                }
+                    "type": {"type": "string", "attribute": "_type"},
+                    "imagePattern": {"type": "string", "attribute": "_image_pattern"},
+                },
             },
             "actions": {
                 "type": "list",
                 "class": "LennyBotActionConfig",
                 "attribute": "_actions",
                 "properties": {
-                    "type": {
-                        "type": "string",
-                        "attribute": "_type"
-                    },
-                    "image": {
-                        "type": "string",
-                        "attribute": "_image"
-                    },
-                    "kustomizePath": {
-                        "type": "string",
-                        "attribute": "_kustomize_path"
-                    },
-                    "tagPattern": {
-                        "type": "string",
-                        "attribute": "_tag_pattern"
-                    },
-                    "url": {
-                        "type": "string",
-                        "attribute": "_url"
-                    },
-                    "target": {
-                        "type": "string",
-                        "attribute": "_target"
-                    },
-                    "targetFile": {
-                        "type": "string",
-                        "attribute": "_target_file"
-                    },
-                    "yamlPath": {
-                        "type": "string",
-                        "attribute": "_yaml_path"
-                    },
-                    "valuePattern": {
-                        "type": "string",
-                        "attribute": "_value_pattern"
-                    }
-                }
-            }
-        }
-    }
+                    "type": {"type": "string", "attribute": "_type"},
+                    "image": {"type": "string", "attribute": "_image"},
+                    "kustomizePath": {"type": "string", "attribute": "_kustomize_path"},
+                    "tagPattern": {"type": "string", "attribute": "_tag_pattern"},
+                    "url": {"type": "string", "attribute": "_url"},
+                    "target": {"type": "string", "attribute": "_target"},
+                    "targetFile": {"type": "string", "attribute": "_target_file"},
+                    "yamlPath": {"type": "string", "attribute": "_yaml_path"},
+                    "valuePattern": {"type": "string", "attribute": "_value_pattern"},
+                },
+            },
+        },
+    },
 }
 
 
 class LennyBotSourceConfig:
-
     def __init__(self) -> None:
         self._type = None
         self._repository = None
@@ -168,7 +94,6 @@ class LennyBotSourceConfig:
 
 
 class LennyBotCheckConfig:
-
     def __init__(self) -> None:
         self._type = None
         self._image_pattern = None
@@ -183,7 +108,6 @@ class LennyBotCheckConfig:
 
 
 class LennyBotActionConfig:
-
     def __init__(self) -> None:
         self._type = None
         self._image = None
@@ -233,7 +157,6 @@ class LennyBotActionConfig:
 
 
 class LennyBotAppConfig:
-
     def __init__(self) -> None:
         self._name = None
         self._source = LennyBotSourceConfig()
@@ -254,7 +177,6 @@ class LennyBotAppConfig:
 
 
 class LennyBotGithubPr:
-
     def __init__(self) -> None:
         self._enabled = False
         self._repository = None
@@ -274,7 +196,6 @@ class LennyBotGithubPr:
 
 
 class LennyBotConfig:
-
     def __init__(self, filename) -> None:
         self._log = None
         with open(filename) as file_ptr:
@@ -292,12 +213,8 @@ class LennyBotConfig:
         self._parse_env()
 
     def _configure_logging(self):
-        logging_level = logging._nameToLevel.get(
-            self._logging_level,
-            logging.DEBUG)
-        logging.basicConfig(
-            level=logging_level,
-            format='%(asctime)s [%(levelname)s] %(name)s: %(message)s')
+        logging_level = logging._nameToLevel.get(self._logging_level, logging.DEBUG)
+        logging.basicConfig(level=logging_level, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug("Logging was configured")
 
@@ -333,8 +250,7 @@ class LennyBotConfig:
             attribute_name = attribute_name.split(".")[-1]
             for item in data[name]:
                 array_target = globals()[property["class"]]()
-                self._parse_data(
-                    property["properties"], item, array_target)
+                self._parse_data(property["properties"], item, array_target)
                 getattr(target, attribute_name).append(array_target)
             return
 

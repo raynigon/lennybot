@@ -1,7 +1,4 @@
-
-
 class IAction:
-
     @property
     def application(self) -> str:
         pass

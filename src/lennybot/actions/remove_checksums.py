@@ -5,7 +5,6 @@ from .iaction import IAction
 
 
 class RemoveChecksumsAction(IAction):
-
     def __init__(self, name, source_version, target_version, config: LennyBotActionConfig) -> None:
         self._name = name
         self._source_version = source_version

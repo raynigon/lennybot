@@ -7,7 +7,6 @@ from ..config.config import LennyBotConfig
 
 
 class LennyBotState:
-
     def __init__(self, config: LennyBotConfig) -> None:
         self._filename = config.state_file
         self._init_file()
@@ -33,9 +32,7 @@ class LennyBotState:
         if name in self._data.keys():
             self._data[name]["version"] = version
         else:
-            self._data[name] = {
-                "version": version
-            }
+            self._data[name] = {"version": version}
 
     def is_valid(self):
         return self._hash == self._calculate_hash()
