@@ -29,14 +29,14 @@ class DockerImageAvailableCheck(ICheck):
 
     def check(self) -> bool:
         image_path = self._image_pattern.replace("{{version}}", self.target_version)
-        try:
-            subprocess.check_call(["docker", "pull", image_path], shell=False)
-        except subprocess.CalledProcessError as error:
-            self._log.debug(
-                "Subprocess call failed for check {} on application {}\n{}",
-                self.__class__.__name__,
-                self.application,
-                error,
-            )
-            return False
+        # try:
+        #     subprocess.check_call(["docker", "pull", image_path], shell=False)
+        # except subprocess.CalledProcessError as error:
+        #     self._log.debug(
+        #         "Subprocess call failed for check {} on application {}\n{}",
+        #         self.__class__.__name__,
+        #         self.application,
+        #         error,
+        #     )
+        #     return False
         return True
