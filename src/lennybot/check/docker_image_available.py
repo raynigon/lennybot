@@ -1,10 +1,11 @@
 import logging
-import subprocess
 
 import requests
 
 from ..config.config import LennyBotCheckConfig
 from .icheck import ICheck
+
+# import subprocess
 
 
 class DockerImageAvailableCheck(ICheck):
@@ -28,15 +29,15 @@ class DockerImageAvailableCheck(ICheck):
         return self._target_version
 
     def check(self) -> bool:
+        """
+        Checks if an image exists in the remote registry from _image_pattern.
+        """
         image_path = self._image_pattern.replace("{{version}}", self.target_version)
-        # try:
-        #     subprocess.check_call(["docker", "pull", image_path], shell=False)
-        # except subprocess.CalledProcessError as error:
-        #     self._log.debug(
-        #         "Subprocess call failed for check {} on application {}\n{}",
-        #         self.__class__.__name__,
-        #         self.application,
-        #         error,
-        #     )
-        #     return False
-        return True
+        image_url = f"https://{image_path}"
+
+        res = requests.get(image_url)
+        if res.status_code == 200:
+            return True
+        elif res.status_code == 404:
+            return False
+        raise Exception("Unexpected status")
