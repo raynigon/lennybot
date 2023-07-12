@@ -58,11 +58,13 @@ class DockerImageAvailableCheck(ICheck):
         )
 
         match = re.match(pattern, image_name)
-        print(match, match.group(1))
+        logging.debug("regex matched following pattern: ", match.group(0))
         if match.group(1) is not None:
-            return DockerImage(None, match.group(1), image_tag)
+            logging.debug("regex matched following pattern: ", match.group(1))
+            return DockerImage("", match.group(1), image_tag)
         elif match.group(2) is not None:
-            return DockerImage(None, match.group(2) + "/" + match.group(3), image_tag)
+            logging.debug("regex matched following pattern: ", match.group(2) + "/" + match.group(3), image_tag)
+            return DockerImage("", match.group(2) + "/" + match.group(3), image_tag)
         else:
             return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
 
