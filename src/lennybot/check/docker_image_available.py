@@ -9,7 +9,7 @@ from .icheck import ICheck
 
 
 class DockerImage:
-    def __init__(self, registry: str, name: str, tag: Optional[str] = None) -> None:
+    def __init__(self, registry: Optional[str], name: str, tag: Optional[str] = None) -> None:
         self._registry = registry
         self._name = name
         self._tag = tag
@@ -43,7 +43,6 @@ class DockerImageAvailableCheck(ICheck):
 
         if image._registry is None:
             return self._exists_on_docker_hub(image)
-
         return self._exists_on_registry(image)
 
     def _parse_image(self):
@@ -61,10 +60,10 @@ class DockerImageAvailableCheck(ICheck):
         logging.debug("regex matched following pattern: " + match.group(0))
         if match.group(1) is not None:
             logging.debug("regex matched following pattern: " + match.group(1))
-            return DockerImage("", match.group(1), image_tag)
+            return DockerImage(None, match.group(1), image_tag)
         elif match.group(2) is not None:
             logging.debug("regex matched following pattern: " + match.group(2) + "/" + match.group(3) + " " + image_tag)
-            return DockerImage("", match.group(2) + "/" + match.group(3), image_tag)
+            return DockerImage(None, match.group(2) + "/" + match.group(3), image_tag)
         else:
             return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
 
