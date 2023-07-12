@@ -58,6 +58,8 @@ class DockerImageAvailableCheck(ICheck):
         )
 
         match = re.match(pattern, image_name)
+        if match is None:
+               raise Exception(f"Given image pattern is not a valid docker image name {image_name}")
         logging.debug("regex matched following pattern: " + match.group(0))
         if match.group(1) is not None:
             logging.debug("regex matched following pattern: " + match.group(1))
