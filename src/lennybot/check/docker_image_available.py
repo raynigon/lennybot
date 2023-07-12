@@ -7,6 +7,9 @@ import requests
 from ..config.config import LennyBotCheckConfig
 from .icheck import ICheck
 
+pattern = (
+    r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
+)
 
 class DockerImage:
     def __init__(self, registry: Optional[str], name: str, tag: Optional[str] = None) -> None:
@@ -52,9 +55,6 @@ class DockerImageAvailableCheck(ICheck):
         image_name = self._image_pattern.split(":")[0]
         image_tag = self._image_pattern.split(":")[1].replace("{{version}}", self.target_version)
 
-        pattern = (
-            r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
-        )
 
         match = re.match(pattern, image_name)
         if match is None:
