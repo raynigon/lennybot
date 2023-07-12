@@ -7,9 +7,8 @@ import requests
 from ..config.config import LennyBotCheckConfig
 from .icheck import ICheck
 
-pattern = (
-    r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
-)
+PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
+
 
 class DockerImage:
     def __init__(self, registry: Optional[str], name: str, tag: Optional[str] = None) -> None:
@@ -55,19 +54,17 @@ class DockerImageAvailableCheck(ICheck):
         image_name = self._image_pattern.split(":")[0]
         image_tag = self._image_pattern.split(":")[1].replace("{{version}}", self.target_version)
 
-
-        match = re.match(pattern, image_name)
+        match = re.match(PATTERN, image_name)
         if match is None:
             raise Exception(f"Given image pattern is not a valid docker image name {image_name}")
         logging.debug("regex matched following pattern: " + match.group(0))
         if match.group(1) is not None:
             logging.debug("regex matched following pattern: " + match.group(1))
             return DockerImage(None, "library/" + match.group(1), image_tag)
-        elif match.group(2) is not None:
+        if match.group(2) is not None:
             logging.debug("regex matched following pattern: " + match.group(2) + "/" + match.group(3) + " " + image_tag)
             return DockerImage(None, match.group(2) + "/" + match.group(3), image_tag)
-        else:
-            return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
+        return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
 
     def _exists_on_docker_hub(self, image: DockerImage):
         res = requests.get(f"https://hub.docker.com/v2/repositories/{image._name}/tags")
@@ -83,6 +80,6 @@ class DockerImageAvailableCheck(ICheck):
         res = requests.get(f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}")
         if res.status_code == 200:
             return True
-        elif res.status_code == 404:
+        if res.status_code == 404:
             return False
         raise Exception(f"Unexpected status: {res.status_code}")
