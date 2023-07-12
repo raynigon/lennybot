@@ -58,11 +58,11 @@ class DockerImageAvailableCheck(ICheck):
 
         match = re.match(pattern, image_name)
         if match is None:
-               raise Exception(f"Given image pattern is not a valid docker image name {image_name}")
+            raise Exception(f"Given image pattern is not a valid docker image name {image_name}")
         logging.debug("regex matched following pattern: " + match.group(0))
         if match.group(1) is not None:
             logging.debug("regex matched following pattern: " + match.group(1))
-            return DockerImage(None, "library/"+match.group(1), image_tag)
+            return DockerImage(None, "library/" + match.group(1), image_tag)
         elif match.group(2) is not None:
             logging.debug("regex matched following pattern: " + match.group(2) + "/" + match.group(3) + " " + image_tag)
             return DockerImage(None, match.group(2) + "/" + match.group(3), image_tag)
@@ -72,7 +72,7 @@ class DockerImageAvailableCheck(ICheck):
     def _exists_on_docker_hub(self, image: DockerImage):
         res = requests.get(f"https://hub.docker.com/v2/repositories/{image._name}/tags")
         if res.status_code != 200:
-                raise Exception(f"Unexpected status: {res.status_code}")
+            raise Exception(f"Unexpected status: {res.status_code}")
 
         for tag in res.json()["results"]:
             if tag["name"] == image._tag:
