@@ -85,4 +85,4 @@ class DockerImageAvailableCheck(ICheck):
             return True
         elif res.status_code == 404:
             return False
-        raise Exception("Unexpected status")
+        raise Exception(f"Unexpected status: {res.status_code}")
