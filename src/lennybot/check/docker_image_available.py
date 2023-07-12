@@ -60,7 +60,7 @@ class DockerImageAvailableCheck(ICheck):
         logging.debug("regex matched following pattern: " + match.group(0))
         if match.group(1) is not None:
             logging.debug("regex matched following pattern: " + match.group(1))
-            return DockerImage(None, match.group(1), image_tag)
+            return DockerImage(None, "library/"+match.group(1), image_tag)
         elif match.group(2) is not None:
             logging.debug("regex matched following pattern: " + match.group(2) + "/" + match.group(3) + " " + image_tag)
             return DockerImage(None, match.group(2) + "/" + match.group(3), image_tag)
