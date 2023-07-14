@@ -67,7 +67,7 @@ class DockerImageAvailableCheck(ICheck):
         return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
 
     def _exists_on_docker_hub(self, image: DockerImage):
-        res = requests.get(f"https://hub.docker.com/v2/repositories/{image._name}/tags")
+        res = requests.get(f"https://hub.docker.com/v2/repositories/{image._name}/tags?page_size=10000")
         if res.status_code != 200:
             raise Exception(f"Unexpected status: {res.status_code}")
 
