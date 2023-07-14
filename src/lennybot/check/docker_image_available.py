@@ -1,10 +1,20 @@
 import logging
-import subprocess
+import re
+from typing import Optional
 
 import requests
 
 from ..config.config import LennyBotCheckConfig
 from .icheck import ICheck
+
+PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
+
+
+class DockerImage:
+    def __init__(self, registry: Optional[str], name: str, tag: Optional[str] = None) -> None:
+        self._registry = registry
+        self._name = name
+        self._tag = tag
 
 
 class DockerImageAvailableCheck(ICheck):
@@ -28,15 +38,48 @@ class DockerImageAvailableCheck(ICheck):
         return self._target_version
 
     def check(self) -> bool:
-        image_path = self._image_pattern.replace("{{version}}", self.target_version)
-        try:
-            subprocess.check_call(["docker", "pull", image_path], shell=False)
-        except subprocess.CalledProcessError as error:
-            self._log.debug(
-                "Subprocess call failed for check {} on application {}\n{}",
-                self.__class__.__name__,
-                self.application,
-                error,
-            )
+        """
+        Checks if an image exists in the remote registry from _image_pattern.
+        """
+        image = self._parse_image()
+
+        if image._registry is None:
+            return self._exists_on_docker_hub(image)
+        return self._exists_on_registry(image)
+
+    def _parse_image(self):
+        if ":" not in self._image_pattern:
+            raise Exception("Image pattern does not contain a tag seperator")
+
+        image_name = self._image_pattern.split(":")[0]
+        image_tag = self._image_pattern.split(":")[1].replace("{{version}}", self.target_version)
+
+        match = re.match(PATTERN, image_name)
+        if match is None:
+            raise Exception(f"Given image pattern is not a valid docker image name {image_name}")
+        logging.debug("regex matched following pattern: " + match.group(0))
+        if match.group(1) is not None:
+            logging.debug("regex matched following pattern: " + match.group(1))
+            return DockerImage(None, "library/" + match.group(1), image_tag)
+        if match.group(2) is not None:
+            logging.debug("regex matched following pattern: " + match.group(2) + "/" + match.group(3) + " " + image_tag)
+            return DockerImage(None, match.group(2) + "/" + match.group(3), image_tag)
+        return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
+
+    def _exists_on_docker_hub(self, image: DockerImage):
+        res = requests.get(f"https://hub.docker.com/v2/repositories/{image._name}/tags")
+        if res.status_code != 200:
+            raise Exception(f"Unexpected status: {res.status_code}")
+
+        for tag in res.json()["results"]:
+            if tag["name"] == image._tag:
+                return True
+        return False
+
+    def _exists_on_registry(self, image: DockerImage):
+        res = requests.get(f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}")
+        if res.status_code == 200:
+            return True
+        if res.status_code == 404:
             return False
-        return True
+        raise Exception(f"Unexpected status: {res.status_code}")
