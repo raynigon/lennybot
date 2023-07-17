@@ -5,6 +5,11 @@ github:
     enabled: true
     repository: "repo/cloud-images"
     branchPrefix: "lennybot-"
+container:
+  registries:
+    ghcr.io:
+      username: "<REDACTED>"
+      password: "<REDACTED>"
 applications:
   - name: argocd
     source:

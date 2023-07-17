@@ -52,7 +52,7 @@ setup(
     install_requires=install_requires(),
     extras_require={
         "dev": ["setuptools", "wheel"],
-        "test": ["coverage"],
+        "test": ["coverage", "pytest"],
     },
     python_requires=">=3.6, <4",
     package_dir={"": "src"},
