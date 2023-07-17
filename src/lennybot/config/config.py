@@ -33,16 +33,16 @@ CONFIGURATION_OPTIONS = {
         "attribute": "_container",
         "properties": {
             "registries": {
-                "type": "map", 
-                "required": False, 
-                "attribute": "_registries", 
+                "type": "map",
+                "required": False,
+                "attribute": "_registries",
                 "value_class": "LennyBotConfigContainerRegistry",
                 "properties": {
                     "username": {"type": "string", "attribute": "_username"},
                     "password": {"type": "string", "attribute": "_password"},
                 },
             }
-        }
+        },
     },
     "applications": {
         "type": "list",
@@ -210,8 +210,8 @@ class LennyBotGithubPr:
     def branch_prefix(self) -> str:
         return self._branch_prefix
 
-class LennyBotConfigContainerRegistry:
 
+class LennyBotConfigContainerRegistry:
     def __init__(self, name) -> None:
         self._name = name
         self._username = None
@@ -229,14 +229,15 @@ class LennyBotConfigContainerRegistry:
     def password(self) -> str:
         return self._password
 
-class LennyBotConfigContainerConfig:
 
+class LennyBotConfigContainerConfig:
     def __init__(self) -> None:
         self._registries = {}
 
     @property
     def registries(self) -> any:
         return self._registries
+
 
 class LennyBotConfig:
     def __init__(self, filename) -> None:
@@ -312,9 +313,9 @@ class LennyBotConfig:
         if "LB_STATE_FILE" in os.environ.keys():
             self._state_file = os.environ["LB_STATE_FILE"]
         for key in os.environ.keys():
-            if not key.startswith('LB_CONTAINER_REGISTRY_'):
+            if not key.startswith("LB_CONTAINER_REGISTRY_"):
                 continue
-            parts = key.removeprefix('LB_CONTAINER_REGISTRY_').split("_")
+            parts = key.removeprefix("LB_CONTAINER_REGISTRY_").split("_")
             registry = parts[0]
             suffix = parts[1]
             if registry not in self._container._registries:

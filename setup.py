@@ -51,7 +51,7 @@ setup(
     },
     install_requires=install_requires(),
     extras_require={
-        "dev": ["setuptools", "wheel"],
+        "dev": ["setuptools", "wheel", "black"],
         "test": ["coverage", "pytest"],
     },
     python_requires=">=3.6, <4",
