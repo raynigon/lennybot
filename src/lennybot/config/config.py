@@ -28,6 +28,22 @@ CONFIGURATION_OPTIONS = {
         "type": "object",
         "properties": {"level": {"type": "string", "required": False, "attribute": "_logging_level"}},
     },
+    "container": {
+        "type": "object",
+        "attribute": "_container",
+        "properties": {
+            "registries": {
+                "type": "map",
+                "required": False,
+                "attribute": "_registries",
+                "value_class": "LennyBotConfigContainerRegistry",
+                "properties": {
+                    "username": {"type": "string", "attribute": "_username"},
+                    "password": {"type": "string", "attribute": "_password"},
+                },
+            }
+        },
+    },
     "applications": {
         "type": "list",
         "required": True,
@@ -195,6 +211,34 @@ class LennyBotGithubPr:
         return self._branch_prefix
 
 
+class LennyBotConfigContainerRegistry:
+    def __init__(self, name) -> None:
+        self._name = name
+        self._username = None
+        self._password = None
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def username(self) -> str:
+        return self._username
+
+    @property
+    def password(self) -> str:
+        return self._password
+
+
+class LennyBotConfigContainerConfig:
+    def __init__(self) -> None:
+        self._registries = {}
+
+    @property
+    def registries(self) -> any:
+        return self._registries
+
+
 class LennyBotConfig:
     def __init__(self, filename) -> None:
         self._log = None
@@ -204,6 +248,7 @@ class LennyBotConfig:
         self._github_token = None
         self._github_pr = LennyBotGithubPr()
         self._logging_level = "INFO"
+        self._container = LennyBotConfigContainerConfig()
         self._applications = []
         self._parse()
         self._configure_logging()
@@ -223,7 +268,7 @@ class LennyBotConfig:
             if name not in data.keys():
                 continue
             config_type = property["type"]
-            if config_type in ["object", "list"]:
+            if config_type in ["object", "list", "map"]:
                 self._parse_nested_data(name, property, data, target)
                 continue
             attribute_name = property["attribute"]
@@ -253,12 +298,35 @@ class LennyBotConfig:
                 self._parse_data(property["properties"], item, array_target)
                 getattr(target, attribute_name).append(array_target)
             return
+        if config_type == "map":
+            if "attribute" in property:
+                target = getattr(target, property["attribute"].split(".")[-1])
+            for key in data[name].keys():
+                map_target = globals()[property["value_class"]](key)
+                self._parse_data(property["properties"], data[name][key], map_target)
+                target[key] = map_target
+            return
 
     def _parse_env(self):
         if "LB_GITHUB_TOKEN" in os.environ.keys():
             self._github_token = os.environ["LB_GITHUB_TOKEN"]
         if "LB_STATE_FILE" in os.environ.keys():
             self._state_file = os.environ["LB_STATE_FILE"]
+        for key in os.environ.keys():
+            if not key.startswith("LB_CONTAINER_REGISTRY_"):
+                continue
+            parts = key.removeprefix("LB_CONTAINER_REGISTRY_").split("_")
+            registry = parts[0]
+            suffix = parts[1]
+            if registry not in self._container._registries:
+                raise Exception("REGISTRY NOT FOUND")
+            registry_data = self._container._registries[registry]
+            if suffix == "USERNAME":
+                registry_data._username = os.environ[key]
+            elif suffix == "PASSWORD":
+                registry_data._password = os.environ[key]
+            else:
+                raise Exception(f"Unknown suffix: {suffix}")
         # TODO make this generic
 
     @property

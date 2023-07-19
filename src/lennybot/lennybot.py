@@ -4,7 +4,7 @@ import pickle
 import subprocess
 from datetime import datetime
 
-from git import Repo, GitDB
+from git import GitDB, Repo
 
 from .actions import *
 from .config import LennyBotConfig
