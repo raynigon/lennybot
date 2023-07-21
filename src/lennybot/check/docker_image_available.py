@@ -4,7 +4,7 @@ from typing import Optional
 
 import requests
 
-from ..config.config import LennyBotCheckConfig
+from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerRegistry
 from .icheck import ICheck
 
 PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
@@ -18,12 +18,13 @@ class DockerImage:
 
 
 class DockerImageAvailableCheck(ICheck):
-    def __init__(self, application_name, source_version, target_version, config: LennyBotCheckConfig) -> None:
+    def __init__(self, application_name, source_version, target_version, config: LennyBotCheckConfig, container_config: LennyBotConfigContainerRegistry) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._application_name = application_name
         self._source_version = source_version
         self._target_version = target_version
         self._image_pattern = config.image_pattern
+        self._container_config = container_config
 
     @property
     def application(self) -> str:
@@ -66,6 +67,18 @@ class DockerImageAvailableCheck(ICheck):
             return DockerImage(None, match.group(2) + "/" + match.group(3), image_tag)
         return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
 
+    def _authenticate_on_registry(self, registry: str, realm: str, service: str, scope: str) -> str:
+        # realm
+        # service
+        # scope
+        # (client_id)
+        # (access_type)
+
+        ## TODO: test for unauthenticated
+
+        access_token = "1234abc"
+        return access_token
+
     def _exists_on_docker_hub(self, image: DockerImage):
         res = requests.get(f"https://hub.docker.com/v2/repositories/{image._name}/tags?page_size=10000")
         if res.status_code != 200:
@@ -76,8 +89,15 @@ class DockerImageAvailableCheck(ICheck):
                 return True
         return False
 
-    def _exists_on_registry(self, image: DockerImage):
+    def _exists_on_registry(self, image: DockerImage, access_token: Optional[str] = None) -> bool:
         res = requests.get(f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}")
+        if res.status_code == 401 and access_token is None:
+            registry = image._registry
+            realm = res.headers["Www-Authenticate"]
+            service = res.headers[""]
+            scope = ""
+            access_token = self._authenticate_on_registry(registry, realm, service, scope)
+            return self._exists_on_registry(image, access_token)
         if res.status_code == 200:
             return True
         if res.status_code == 404:
