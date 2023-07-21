@@ -12,10 +12,11 @@ from .source import create_source
 
 
 class LennyBotApplication:
-    def __init__(self, config: LennyBotAppConfig, github) -> None:
+    def __init__(self, config: LennyBotAppConfig, global_config: LennyBotConfig ,github) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._name = config.name
         self._config = config
+        self._global_config = global_config
         self._source = create_source(self._name, config.source, github)
         self._checks = []
         self._action_configs = config.actions
@@ -30,7 +31,7 @@ class LennyBotApplication:
         self._current_version = state.current_version(self._name)
         self._latest_version = self._source.latest_version()
         for config in self._config._checks:
-            check = create_check(self.name, self._current_version, self._latest_version, config)
+            check = create_check(self.name, self._current_version, self._latest_version, config, self._global_config)
             self._checks.append(check)
 
     def should_update(self) -> bool:
@@ -66,7 +67,7 @@ class PlanService:
         self._github = github
         self._applications: List[LennyBotApplication] = []
         for app_config in config.applications:
-            self._applications.append(LennyBotApplication(app_config, self._github))
+            self._applications.append(LennyBotApplication(app_config, config, self._github))
 
     def plan(self, state: LennyBotState) -> LennyBotPlan:
         actions = []
