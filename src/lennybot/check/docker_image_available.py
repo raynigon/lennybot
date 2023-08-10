@@ -83,29 +83,19 @@ class DockerImageAvailableCheck(ICheck):
 
         registry_data = self._container_config.registries[registry]
 
-        request_data = {
-            "scope": scope,
-            "grant_type": "password",
-            "service": service,
-            "username": registry_data.username,
-            "password": registry_data.password,
-            "client_id": "unknown",
-            "access_type": "offline",
-        }
-        print(f"REQUEST DATA: ", request_data)
-         
-        
-        response = requests.post(realm, data=request_data)
+        url = f"{realm}?scope={scope}&grant_type=password&service={service}&username=USERNAME&password={registry_data.password}&client_id=lennybot&access_type=offline"
+        print(url)
+        response = requests.get(url)
 
         if response.status_code == 401:
-            raise Exception("Error occured: Unauthenticated %rc", response.status_code)
-        print("RESPONSE CONTENT:", response.content)
-    
+            raise Exception("Error occured: Unauthenticated %e", response.status_code)
+
+        if response.status_code == 200:
+            token_data = response.json()
+            access_token = token_data.get("token")
+            return access_token
 
         ## TODO: test for unauthenticated
-
-        access_token = "123abc"
-        return access_token
 
     def _exists_on_docker_hub(self, image: DockerImage):
         url = f"https://hub.docker.com/v2/repositories/{image._name}/tags?page_size=10000"
@@ -119,11 +109,15 @@ class DockerImageAvailableCheck(ICheck):
         return False
 
     def _exists_on_registry(self, image: DockerImage, access_token: Optional[str] = None) -> bool:
-        request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"
-        print(request_url)
-        res = requests.get(request_url)
-        print(res.headers)
-        res = requests.get(f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}")
+        request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"  # TODO missing the access token in the url
+        
+        if access_token is not None:
+            headers = {"Authorization": f"Bearer {access_token}"}
+            res = requests.get(request_url, headers=headers)
+        else:
+            res = requests.get(request_url)
+        
+            
         if res.status_code == 401 and access_token is None:
             registry = image._registry
             authenticate = res.headers["Www-Authenticate"]
