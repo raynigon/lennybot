@@ -110,14 +110,13 @@ class DockerImageAvailableCheck(ICheck):
 
     def _exists_on_registry(self, image: DockerImage, access_token: Optional[str] = None) -> bool:
         request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"  # TODO missing the access token in the url
-        
+
         if access_token is not None:
             headers = {"Authorization": f"Bearer {access_token}"}
             res = requests.get(request_url, headers=headers)
         else:
             res = requests.get(request_url)
-        
-            
+
         if res.status_code == 401 and access_token is None:
             registry = image._registry
             authenticate = res.headers["Www-Authenticate"]
