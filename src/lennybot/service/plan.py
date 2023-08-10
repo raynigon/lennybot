@@ -12,7 +12,7 @@ from .source import create_source
 
 
 class LennyBotApplication:
-    def __init__(self, config: LennyBotAppConfig, global_config: LennyBotConfig ,github) -> None:
+    def __init__(self, config: LennyBotAppConfig, global_config: LennyBotConfig, github) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._name = config.name
         self._config = config

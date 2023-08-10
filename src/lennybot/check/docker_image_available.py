@@ -4,10 +4,11 @@ from typing import Optional
 
 import requests
 
-from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerRegistry
+from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig, LennyBotConfigContainerRegistry
 from .icheck import ICheck
 
 PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
+BLOCKED_REGISTRIES = ["docker.elastic.co"]  # Requires authentication, but is a public registry
 
 
 class DockerImage:
@@ -18,7 +19,14 @@ class DockerImage:
 
 
 class DockerImageAvailableCheck(ICheck):
-    def __init__(self, application_name, source_version, target_version, config: LennyBotCheckConfig, container_config: LennyBotConfigContainerRegistry) -> None:
+    def __init__(
+        self,
+        application_name,
+        source_version,
+        target_version,
+        config: LennyBotCheckConfig,
+        container_config: LennyBotConfigContainerConfig,
+    ) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._application_name = application_name
         self._source_version = source_version
@@ -46,6 +54,8 @@ class DockerImageAvailableCheck(ICheck):
 
         if image._registry is None:
             return self._exists_on_docker_hub(image)
+        if image._registry in BLOCKED_REGISTRIES:
+            raise Exception(f"Registry in Blocked Registries {image._registry}")
         return self._exists_on_registry(image)
 
     def _parse_image(self):
@@ -68,21 +78,40 @@ class DockerImageAvailableCheck(ICheck):
         return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
 
     def _authenticate_on_registry(self, registry: str, realm: str, service: str, scope: str) -> str:
-        # realm
-        # service
-        # scope
-        # (client_id)
-        # (access_type)
+        if registry not in self._container_config.registries.keys():
+            raise Exception(f"No credentials found for registry: {registry}")
+
+        registry_data = self._container_config.registries[registry]
+
+        request_data = {
+            "scope": scope,
+            "grant_type": "password",
+            "service": service,
+            "username": registry_data.username,
+            "password": registry_data.password,
+            "client_id": "unknown",
+            "access_type": "offline",
+        }
+        print(f"REQUEST DATA: ", request_data)
+         
+        
+        response = requests.post(realm, data=request_data)
+
+        if response.status_code == 401:
+            raise Exception("Error occured: Unauthenticated %rc", response.status_code)
+        print("RESPONSE CONTENT:", response.content)
+    
 
         ## TODO: test for unauthenticated
 
-        access_token = "1234abc"
+        access_token = "123abc"
         return access_token
 
     def _exists_on_docker_hub(self, image: DockerImage):
-        res = requests.get(f"https://hub.docker.com/v2/repositories/{image._name}/tags?page_size=10000")
+        url = f"https://hub.docker.com/v2/repositories/{image._name}/tags?page_size=10000"
+        res = requests.get(url)
         if res.status_code != 200:
-            raise Exception(f"Unexpected status: {res.status_code}")
+            raise Exception(f"Unexpected status: {res.status_code} for url: {url}")
 
         for tag in res.json()["results"]:
             if tag["name"] == image._tag:
@@ -90,16 +119,23 @@ class DockerImageAvailableCheck(ICheck):
         return False
 
     def _exists_on_registry(self, image: DockerImage, access_token: Optional[str] = None) -> bool:
+        request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"
+        print(request_url)
+        res = requests.get(request_url)
+        print(res.headers)
         res = requests.get(f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}")
         if res.status_code == 401 and access_token is None:
             registry = image._registry
-            realm = res.headers["Www-Authenticate"]
-            service = res.headers[""]
-            scope = ""
+            authenticate = res.headers["Www-Authenticate"]
+            realm = authenticate.split('realm="')[1].split('"')[0]
+            service = authenticate.split('service="')[1].split('"')[0]
+            scope = authenticate.split('scope="')[1].split('"')[0]
+
             access_token = self._authenticate_on_registry(registry, realm, service, scope)
+
             return self._exists_on_registry(image, access_token)
         if res.status_code == 200:
             return True
         if res.status_code == 404:
             return False
-        raise Exception(f"Unexpected status: {res.status_code}")
+        raise Exception(f"Unexpected status: {res.status_code} for url {request_url}")
