@@ -1,4 +1,5 @@
 from lennybot.config.config import LennyBotConfig
+
 from .docker_image_available import DockerImageAvailableCheck
 from .icheck import ICheck
 
