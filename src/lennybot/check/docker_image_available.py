@@ -8,7 +8,7 @@ from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig, 
 from .icheck import ICheck
 
 PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
-BLOCKED_REGISTRIES = ["docker.elastic.co"]  # Requires authentication, but is a public registry
+BLOCKED_REGISTRIES = []  # "docker.elastic.co"]  # Requires authentication, but is a public registry
 
 
 class DockerImage:
@@ -83,12 +83,15 @@ class DockerImageAvailableCheck(ICheck):
 
         registry_data = self._container_config.registries[registry]
 
-        url = f"{realm}?scope={scope}&grant_type=password&service={service}&username=USERNAME&password={registry_data.password}&client_id=lennybot&access_type=offline"
-        print(url)
-        response = requests.get(url)
+        if registry_data.password is None or "":
+            url = f"{realm}?scope={scope}&grant_type=password&service={service}&username={registry_data.username}&password={registry_data.password}&client_id=lennybot&access_type=offline"
+            response = requests.get(url)
+        else:
+            url = f"{realm}?scope={scope}&grant_type=password&service={service}&client_id=lennybot&access_type=offline"
+            response = requests.get(url)
 
         if response.status_code == 401:
-            raise Exception("Error occured: Unauthenticated %e", response.status_code)
+            raise Exception("Error occured: Unauthenticated: ", response.status_code)
 
         if response.status_code == 200:
             token_data = response.json()
@@ -109,7 +112,7 @@ class DockerImageAvailableCheck(ICheck):
         return False
 
     def _exists_on_registry(self, image: DockerImage, access_token: Optional[str] = None) -> bool:
-        request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"  # TODO missing the access token in the url
+        request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"
 
         if access_token is not None:
             headers = {"Authorization": f"Bearer {access_token}"}
