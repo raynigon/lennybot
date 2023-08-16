@@ -90,11 +90,11 @@ class DockerImageAvailableCheck(ICheck):
             return DockerImage(None, match.group(2) + "/" + match.group(3), image_tag)
         return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
 
-    def _authenticate_on_registry(self, registry: str, WwwAuthenticateHeader) -> str:
+    def _authenticate_on_registry(self, registry: str, authentication_header: WwwAuthenticateHeader) -> str:
         params = {
-            "scope": WwwAuthenticateHeader.scope,
+            "scope": authentication_header.scope,
             "grant_type": "password",
-            "service": WwwAuthenticateHeader.service,
+            "service": authentication_header.service,
             "client_id": "lennybot",
             "access_type": "offline",
         }
@@ -104,7 +104,7 @@ class DockerImageAvailableCheck(ICheck):
             params["password"] = registry_data.password
             params["username"] = registry_data.username
 
-        url = f"{WwwAuthenticateHeader.realm}?{urlencode(params)}"
+        url = f"{authentication_header.realm}?{urlencode(params)}"
 
         response = requests.get(url)
 
