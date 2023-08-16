@@ -134,3 +134,6 @@ dmypy.json
 # Draw.io
 *.drawio.bkp
 *.drawio.dtmp
+
+images/*
+images
