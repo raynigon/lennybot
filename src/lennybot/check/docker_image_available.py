@@ -87,7 +87,8 @@ class DockerImageAvailableCheck(ICheck):
             url = f"{realm}?scope={scope}&grant_type=password&service={service}&username={registry_data.username}&password={registry_data.password}&client_id=lennybot&access_type=offline"
             response = requests.get(url)
         else:
-            url = f"{realm}?scope={scope}&grant_type=password&service={service}&client_id=lennybot&access_type=offline"
+            params = {"scope": scope, "grant_type": "password", "service": service, "client_id": "lennybot", "access_type": "offline"}
+            url = f"{realm}?{url_encode_params(params)}"
             response = requests.get(url)
 
         if response.status_code == 401:
