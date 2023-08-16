@@ -22,7 +22,7 @@ class WwwAuthenticateHeader:
     def __init__(self, realm: str, scope: str, service: str) -> None:
         self.realm = realm
         self.scope = scope
-        self.sevice = service
+        self.service = service
 
     @classmethod
     def parse(cls, response):
