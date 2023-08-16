@@ -242,7 +242,7 @@ class LennyBotConfigContainerConfig:
 class LennyBotConfig:
     def __init__(self, filename) -> None:
         self._log = None
-        with open(filename) as file_ptr:
+        with open(filename, encoding="utf-8") as file_ptr:
             self._data = yaml.safe_load(file_ptr)
         self._state_file = None
         self._github_token = None

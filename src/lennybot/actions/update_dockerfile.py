@@ -31,7 +31,7 @@ class UpdateDockerfileAction(IAction):
         return self._target_version
 
     def run(self):
-        with open(self._target_file, "r") as file_ptr:
+        with open(self._target_file, "r", encoding="utf-8") as file_ptr:
             lines = file_ptr.readlines()
         result = []
         for line in lines:
@@ -40,7 +40,7 @@ class UpdateDockerfileAction(IAction):
                 result.append(f"FROM {self._image_name}:{self._create_value()}{match.group(2)}\n")
                 continue
             result.append(line)
-        with open(self._target_file, "w") as file_ptr:
+        with open(self._target_file, "w", encoding="utf-8") as file_ptr:
             file_ptr.writelines(result)
 
     def _create_value(self):
