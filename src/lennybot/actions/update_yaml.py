@@ -41,7 +41,7 @@ class UpdateYamlAction(IAction):
             raise Exception("Yaml document could not be loaded")
         processor = Processor(log, yaml_data)
         processor.set_value(self._yaml_path, self._create_value())
-        with open(self._target_file, "w") as file_ptr:
+        with open(self._target_file, "w", encoding="utf-8") as file_ptr:
             yaml.dump(yaml_data, stream=file_ptr)
 
     def _create_value(self):

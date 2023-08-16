@@ -5,23 +5,22 @@ https://github.com/pypa/sampleproject
 """
 
 import pkg_resources
-
 # Always prefer setuptools over distutils
 from setuptools import find_packages, setup
 
 
 def readme():
-    with open("README.md") as f:
+    with open("README.md", encoding="utf-8") as f:
         return f.read()
 
 
 def version():
-    with open("version.txt") as f:
+    with open("version.txt", encoding="utf-8") as f:
         return f.read()
 
 
 def install_requires():
-    with open("requirements.txt") as f:
+    with open("requirements.txt", encoding="utf-8") as f:
         reqs = pkg_resources.parse_requirements(f.read())
         return [str(ir) for ir in reqs]
 

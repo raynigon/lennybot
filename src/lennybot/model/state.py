@@ -11,12 +11,12 @@ class LennyBotState:
         self._filename = config.state_file
         self._init_file()
         self._hash = self._calculate_hash()
-        with open(self._filename) as file_ptr:
+        with open(self._filename, encoding="utf-8") as file_ptr:
             self._data = yaml.safe_load(file_ptr)
 
     def _init_file(self):
         if not os.path.exists(self._filename):
-            with open(self._filename, "w") as file_ptr:
+            with open(self._filename, "w", encoding="utf-8") as file_ptr:
                 yaml.safe_dump({}, file_ptr)
 
     def _calculate_hash(self):
@@ -40,5 +40,5 @@ class LennyBotState:
     def save(self):
         if not self.is_valid():
             raise Exception("Invalid State")
-        with open(self._filename, "w") as file_ptr:
+        with open(self._filename, "w", encoding="utf-8") as file_ptr:
             yaml.safe_dump(self._data, file_ptr, sort_keys=False, indent=4)

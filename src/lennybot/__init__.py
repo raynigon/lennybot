@@ -11,7 +11,7 @@ def _version() -> str:
     if "__version__" in globals():
         return globals()["__version__"]
     if os.path.exists("version.txt"):
-        with open("version.txt") as file_ptr:
+        with open("version.txt", encoding="utf-8") as file_ptr:
             return file_ptr.read()
     return "-"
 
