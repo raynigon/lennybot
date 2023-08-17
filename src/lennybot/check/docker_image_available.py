@@ -72,6 +72,9 @@ class DockerImageAvailableCheck(ICheck):
         return self._exists_on_registry(image)
 
     def _parse_image(self):
+        """
+        Parse function to return a docker image is correct by syntax
+        """
         if ":" not in self._image_pattern:
             raise Exception("Image pattern does not contain a tag seperator")
 
@@ -119,6 +122,9 @@ class DockerImageAvailableCheck(ICheck):
         ## TODO: test for unauthenticated
 
     def _exists_on_docker_hub(self, image: DockerImage):
+        """
+        Checks if the given Docker file exists on DockerHub
+        """
         url = f"https://hub.docker.com/v2/repositories/{image._name}/tags?page_size=10000"
         response = requests.get(url)
         if response.status_code != 200:
@@ -130,6 +136,11 @@ class DockerImageAvailableCheck(ICheck):
         return False
 
     def _exists_on_registry(self, image: DockerImage, access_token: Optional[str] = None) -> bool:
+        """
+        Checks if the given Docker file exists on that perticular registry.
+        Also authenticated requests are handled within this function by providing an access token.
+        """
+
         request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"
 
         if access_token is not None:
