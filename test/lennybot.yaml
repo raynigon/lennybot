@@ -8,9 +8,6 @@ github:
 container:
   registries:
     ghcr.io:
-      username: "USERNAME"
-      password: "<REDACTED>"
-    bracrebike.arc.io:
       username: "<REDACTED>"
       password: "<REDACTED>"
 applications:
