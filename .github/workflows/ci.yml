@@ -64,7 +64,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2.2.2
         with:
-          python-version: 3.x
+          python-version: "${{ env.PYTHON_VERSION }}"
       - name: Python Pip Install
         uses: logikal-code/pip-install@v1.0.0
       - name: Python Lint
@@ -73,3 +73,20 @@ jobs:
           echo "::add-matcher::.github/matchers/pylint-warning.json"
           pip install pylint
           pylint --output-format=colorized src/lennybot
+  lint_pyright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: "${{ env.PYTHON_VERSION }}"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyright
+          pip install -r requirements.txt
+      - name: Lint with pyright
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          pyright .
