@@ -7,12 +7,8 @@ line_length = 120
 
 [tool.pyright]
 include = ["src"]
-exclude = ["**/node_modules",
-    "**/__pycache__"
+exclude = ["**/__pycache__"
 ]
-ignore = ["src/oldstuff"]
-defineConstant = { DEBUG = true }
-stubPath = "src/stubs"
 venv = ".venv"
 
 reportMissingImports = true
