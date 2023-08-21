@@ -4,3 +4,21 @@ target-version = ['py311']
 
 [tool.isort]
 line_length = 120
+
+[tool.pyright]
+include = ["src"]
+exclude = ["**/__pycache__"
+]
+venv = ".venv"
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+
+pythonVersion = "3.11"
+pythonPlatform = "Linux"
+
+executionEnvironments = [
+  { root = "src/lennybot", pythonVersion = "3.11", pythonPlatform = "Linux" },
+  { root = "src/test", extraPaths = ["src/test/config", "src/test/grafana" ]},
+  { root = "src" }
+]
