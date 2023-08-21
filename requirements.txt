@@ -3,4 +3,3 @@ yamlpath
 requests
 GitPython
 PyGithub
-pyright
