@@ -119,8 +119,6 @@ class DockerImageAvailableCheck(ICheck):
             access_token = token_data.get("token")
             return access_token
 
-        ## TODO: test for unauthenticated
-
     def _exists_on_docker_hub(self, image: DockerImage):
         """
         Checks if the given Docker file exists on DockerHub
