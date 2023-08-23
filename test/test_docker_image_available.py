@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from lennybot.check.docker_image_available import DockerImage, DockerImageAvailableCheck, WwwAuthenticateHeader
+from lennybot.check.docker_image_available import DockerImageAvailableCheck, WwwAuthenticateHeader
 from lennybot.config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig, LennyBotConfigContainerRegistry
 
 
