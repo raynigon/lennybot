@@ -7,6 +7,7 @@ env:
 
 jobs:
   lint_black:
+    name: "Linter - Black"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -25,6 +26,7 @@ jobs:
             src: "./src"
             version: "~= 22.0"
   lint_ruff:
+    name: "Linter - Ruff"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -42,6 +44,7 @@ jobs:
           # stop the build if there are Python syntax errors or undefined names
           ruff --format=github --select=E9,F63,F7,F82 --target-version=py311 .
   lint_isort:
+    name: "Linter - iSort"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -58,6 +61,7 @@ jobs:
         run: |
           isort **/*.py -c
   lint_pylint:
+    name: "Linter - PyLint"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -74,6 +78,7 @@ jobs:
           pip install pylint
           pylint --output-format=colorized src/lennybot
   lint_pyright:
+    name: "Linter - PyRight"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -87,10 +92,9 @@ jobs:
           pip install pyright
           pip install -r requirements.txt
       - name: Lint with pyright
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          pyright .
+        run: pyright
   python_tests:
+    name: "Tests"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

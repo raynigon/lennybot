@@ -24,14 +24,14 @@ class LennyBotPlan:
     def state(self) -> LennyBotState:
         return self._state
 
-    def source_version(self, application: str) -> str:
+    def source_version(self, application: str) -> str | None:
         for action in self._actions:
             if action.application != application:
                 continue
             return action.source_version
         return None
 
-    def target_version(self, application: str) -> str:
+    def target_version(self, application: str) -> str | None:
         for action in self._actions:
             if action.application != application:
                 continue
