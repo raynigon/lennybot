@@ -108,7 +108,6 @@ class DockerImageAvailableCheck(ICheck):
             params["username"] = registry_data.username
 
         url = f"{authentication_header.realm}?{urlencode(params)}"
-
         response = requests.get(url)
 
         if response.status_code == 200:
