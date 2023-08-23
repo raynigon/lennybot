@@ -115,10 +115,11 @@ class DockerImageAvailableCheck(ICheck):
             token_data = response.json()
             access_token = token_data.get("token")
             return str(access_token)
-        elif response.status_code == 401:
+
+        if response.status_code == 401:
             raise Exception("Error occured: Unauthenticated: ", response.status_code)
-        else:
-            raise Exception("Unexpected Status Code", response.status_code)
+
+        raise Exception("Unexpected Status Code", response.status_code)
 
     def _exists_on_docker_hub(self, image: DockerImage):
         """
