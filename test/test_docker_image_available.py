@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from lennybot.check.docker_image_available import DockerImage, DockerImageAvailableCheck
-from lennybot.config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig
+from lennybot.check.docker_image_available import DockerImage, DockerImageAvailableCheck, WwwAuthenticateHeader
+from lennybot.config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig, LennyBotConfigContainerRegistry
 
 
 class TestParseImage(unittest.TestCase):
@@ -40,8 +40,33 @@ class TestParseImage(unittest.TestCase):
         check = DockerImageAvailableCheck("test-app", "2.7.6", "2.7.7", self.config, self.container_config)
         self.assertRaises(Exception, check.check)
 
-    def test_given_image_with_authentication(self):
-        self.config._image_pattern = "docker.elastic.co/beats/filebeat:{{version}}"
-        check = DockerImageAvailableCheck("file-beat", "1.5.0", "1.6.0", self.config, self.container_config)
-        # self.assertRaises(check.check()) # // TODO not implemented yet
-        self.assertRaises(Exception, check.check())
+class TestAuthenticateImage(unittest.TestCase):
+    def setUp(self) -> None:
+        self.config = LennyBotCheckConfig()
+        self.container_config = LennyBotConfigContainerConfig()
+        self.docker_image_check = DockerImageAvailableCheck("", "", "", self.config, self.container_config)
+
+    def test_authenticate_on_registry_returns_access_token(self):
+        registry = LennyBotConfigContainerRegistry("hub.docker.io")
+        header_value = WwwAuthenticateHeader('https://docker-auth.elastic.co/auth', 'repository:beats/filebeat:pull', 'token-service')
+        access_token = self.docker_image_check._authenticate_on_registry(registry, header_value)
+        self.assertIsNotNone(access_token)
+
+    def test_authenticate_on_registry_without_credentials(self):
+        self.config._image_pattern = "quay.io/argo/proj/argocd:v{{version}}"
+        registry = LennyBotConfigContainerRegistry("quay.io")
+        registry._username = ""
+        registry._password = ""
+        header_value = WwwAuthenticateHeader('https://quay.io/auth', 'repository:argo/proj/argocd:pull', 'token-service')
+        access_token = self.docker_image_check._authenticate_on_registry(registry, header_value)
+        self.assertIsNone(access_token)
+
+    def test_authenticate_on_registry_wrong_credentials(self):
+        self.config._image_pattern = "quay.io/argo/proj/argocd:v{{version}}"
+        registry = LennyBotConfigContainerRegistry("quay.io")
+        registry._username = "ABCD"
+        registry._password = "1234"
+        self.container_config._registries["quay.io"] = registry
+        header_value = WwwAuthenticateHeader('https://quay.io/auth', 'repository:argo/proj/argocd:pull', 'token-service')
+        access_token = self.docker_image_check._authenticate_on_registry(registry, header_value)
+        self.assertIsNone(access_token)
