@@ -111,13 +111,14 @@ class DockerImageAvailableCheck(ICheck):
 
         response = requests.get(url)
 
-        if response.status_code == 401:
-            raise Exception("Error occured: Unauthenticated: ", response.status_code)
-
         if response.status_code == 200:
             token_data = response.json()
             access_token = token_data.get("token")
-            return access_token
+            return str(access_token)
+        elif response.status_code == 401:
+            raise Exception("Error occured: Unauthenticated: ", response.status_code)
+        else:
+            raise Exception("Unexpected Status Code", response.status_code)
 
     def _exists_on_docker_hub(self, image: DockerImage):
         """
@@ -138,6 +139,8 @@ class DockerImageAvailableCheck(ICheck):
         Checks if the given Docker file exists on that perticular registry.
         Also authenticated requests are handled within this function by providing an access token.
         """
+        if image._registry is None:
+            raise Exception("registry must be set and not be None")
 
         request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"
 

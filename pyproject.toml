@@ -6,7 +6,7 @@ target-version = ['py311']
 line_length = 120
 
 [tool.pyright]
-include = ["src"]
+include = ["src", "test"]
 exclude = ["**/__pycache__"
 ]
 venv = ".venv"

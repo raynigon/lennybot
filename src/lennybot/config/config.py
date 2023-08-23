@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import yaml
 
@@ -112,7 +112,7 @@ class LennyBotSourceConfig:
 class LennyBotCheckConfig:
     def __init__(self) -> None:
         self._type = None
-        self._image_pattern = None
+        self._image_pattern: Optional[str] = None
 
     @property
     def type(self) -> str:
@@ -214,8 +214,8 @@ class LennyBotGithubPr:
 class LennyBotConfigContainerRegistry:
     def __init__(self, name) -> None:
         self._name = name
-        self._username = None
-        self._password = None
+        self._username: Optional[str] = None
+        self._password: Optional[str] = None
 
     @property
     def name(self) -> str:
