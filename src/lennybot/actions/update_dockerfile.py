@@ -11,6 +11,8 @@ class UpdateDockerfileAction(IAction):
         self._name = name
         self._source_version = source_version
         self._target_version = target_version
+        if config.target_file is None:
+            raise Exception("Target file is not set for application " + name)
         self._target_file = config.target_file
         self._image_name = config.image
         if config.value_pattern is not None:

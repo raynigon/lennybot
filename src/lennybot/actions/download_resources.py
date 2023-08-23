@@ -9,7 +9,11 @@ class DownloadResourcesAction(IAction):
         self._name = name
         self._source_version = source_version
         self._target_version = target_version
+        if config.url is None:
+            raise Exception("Download URL is not set for application " + name)
         self._url = config.url
+        if config.target is None:
+            raise Exception("Target Path is not set for application " + name)
         self._target_path = config.target
 
     @property

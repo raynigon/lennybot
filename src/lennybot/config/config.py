@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import List
+from typing import List, Dict, Any
 
 import yaml
 
@@ -98,15 +98,15 @@ class LennyBotSourceConfig:
 
     @property
     def type(self) -> str:
-        return self._type
+        return str(self._type)
 
     @property
     def repository(self) -> str:
-        return self._repository
+        return str(self._repository)
 
     @property
     def regex(self) -> str:
-        return self._regex
+        return str(self._regex)
 
 
 class LennyBotCheckConfig:
@@ -116,11 +116,11 @@ class LennyBotCheckConfig:
 
     @property
     def type(self) -> str:
-        return self._type
+        return str(self._type)
 
     @property
     def image_pattern(self) -> str:
-        return self._image_pattern
+        return str(self._image_pattern)
 
 
 class LennyBotActionConfig:
@@ -137,38 +137,38 @@ class LennyBotActionConfig:
 
     @property
     def type(self) -> str:
-        return self._type
+        return str(self._type)
 
     @property
-    def image(self) -> str:
+    def image(self) -> str | None:
         return self._image
 
     @property
-    def kustomize_path(self) -> str:
+    def kustomize_path(self) -> str | None:
         return self._kustomize_path
 
     @property
-    def tag_pattern(self) -> str:
+    def tag_pattern(self) -> str | None:
         return self._tag_pattern
 
     @property
-    def target(self) -> str:
+    def target(self) -> str | None:
         return self._target
 
     @property
-    def url(self) -> str:
+    def url(self) -> str | None:
         return self._url
 
     @property
-    def target_file(self) -> str:
+    def target_file(self) -> str | None:
         return self._target_file
 
     @property
-    def yaml_path(self) -> str:
+    def yaml_path(self) -> str | None:
         return self._yaml_path
 
     @property
-    def value_pattern(self) -> str:
+    def value_pattern(self) -> str | None:
         return self._value_pattern
 
 
@@ -181,7 +181,7 @@ class LennyBotAppConfig:
 
     @property
     def name(self) -> str:
-        return self._name
+        return str(self._name)
 
     @property
     def source(self) -> LennyBotSourceConfig:
@@ -199,16 +199,16 @@ class LennyBotGithubPr:
         self._branch_prefix = "lennybot-"
 
     @property
-    def enabled(self) -> str:
+    def enabled(self) -> bool:
         return self._enabled
 
     @property
     def repository(self) -> str:
-        return self._repository
+        return str(self._repository)
 
     @property
     def branch_prefix(self) -> str:
-        return self._branch_prefix
+        return str(self._branch_prefix)
 
 
 class LennyBotConfigContainerRegistry:
@@ -223,11 +223,11 @@ class LennyBotConfigContainerRegistry:
 
     @property
     def username(self) -> str:
-        return self._username
+        return str(self._username)
 
     @property
     def password(self) -> str:
-        return self._password
+        return str(self._password)
 
 
 class LennyBotConfigContainerConfig:
@@ -235,7 +235,7 @@ class LennyBotConfigContainerConfig:
         self._registries = {}
 
     @property
-    def registries(self) -> any:
+    def registries(self) -> Dict[str, LennyBotConfigContainerRegistry]:
         return self._registries
 
 
@@ -292,6 +292,8 @@ class LennyBotConfig:
             self._parse_data(property["properties"], data[name], target)
             return
         if config_type == "list":
+            if attribute_name is None:
+                raise Exception("Attribute name was not set, but is needed for config_type list")
             attribute_name = attribute_name.split(".")[-1]
             for item in data[name]:
                 array_target = globals()[property["class"]]()
@@ -331,14 +333,14 @@ class LennyBotConfig:
 
     @property
     def state_file(self) -> str:
-        return self._state_file
+        return str(self._state_file)
 
     @property
     def applications(self) -> List[LennyBotAppConfig]:
         return self._applications
 
     @property
-    def github_token(self) -> str:
+    def github_token(self) -> str | None:
         return self._github_token
 
     @property

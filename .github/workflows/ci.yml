@@ -87,9 +87,7 @@ jobs:
           pip install pyright
           pip install -r requirements.txt
       - name: Lint with pyright
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          pyright .
+        run: pyright
   python_tests:
     runs-on: ubuntu-latest
     steps:

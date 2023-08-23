@@ -4,7 +4,7 @@ import pickle
 import subprocess
 from datetime import datetime
 
-from git import GitDB, Repo
+from git import GitDB, Repo # pyright: ignore [reportPrivateImportUsage]
 
 from .actions import *
 from .config import LennyBotConfig
@@ -57,7 +57,7 @@ class LennyBot:
         result = subprocess.call(["git", "config", "--global", "--add", "safe.directory", os.getcwd()])
         if result != 0:
             self._log.error("Unexpected return code from git config")
-        self._repo = Repo("./", odbt=GitDB)
+        self._repo = Repo("./", odbt=GitDB) # type: ignore
         self._log.debug(f"Initialized repository")
         head = self._repo.create_head(self._branch_name)
         self._log.debug(f"Created Head")
@@ -66,6 +66,8 @@ class LennyBot:
 
     def ci_finalize(self, plan: LennyBotPlan, result):
         self._log.debug(f"Finalize CI")
+        if self._repo is None:
+            raise Exception("Repository is non, ci_setup was not called")
         if not self._repo.index.diff(None) and not self._repo.untracked_files:
             return
         title = f"Lennybot updated {len(plan.applications)} applications"
