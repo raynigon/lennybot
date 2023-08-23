@@ -45,6 +45,11 @@ class GitHubService:
             pull.edit(state="closed")
 
     def _find_own_pulls(self) -> List[PullRequest]:
+        if self._github is None:
+            raise Exception(
+                "No github token was given, therefore pull requests can not be listed on "
+                + self._config.github_pr.repository
+            )
         repo = self._github.get_repo(self._config.github_pr.repository)
         pulls = repo.get_pulls("open")
         result = []

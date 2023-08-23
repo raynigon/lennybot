@@ -9,6 +9,8 @@ class RemoveChecksumsAction(IAction):
         self._name = name
         self._source_version = source_version
         self._target_version = target_version
+        if config.target is None:
+            raise Exception("Target Path is not set for application " + name)
         self._target_file = config.target
 
     @property
