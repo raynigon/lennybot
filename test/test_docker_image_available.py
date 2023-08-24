@@ -35,8 +35,13 @@ class TestParseImage(unittest.TestCase):
         check = DockerImageAvailableCheck("test-app", "2.7.6", "2.7.7", self.config, self.container_config)
         self.assertRaises(Exception, check.check)
 
-    def test_given_toolong_image_path(self):
+    def test_given_image_path_with_4_segments(self):
         self.config._image_pattern = "quay.io/argo/proj/argocd:v{{version}}"
+        check = DockerImageAvailableCheck("test-app", "2.7.6", "2.7.7", self.config, self.container_config)
+        self.assertRaises(Exception, check.check)
+
+    def test_given_toolong_image_path(self):
+        self.config._image_pattern = "quay.io/argo/proj/argo/argocd:v{{version}}"
         check = DockerImageAvailableCheck("test-app", "2.7.6", "2.7.7", self.config, self.container_config)
         self.assertRaises(Exception, check.check)
 
