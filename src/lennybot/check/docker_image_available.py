@@ -132,7 +132,7 @@ class DockerImageAvailableCheck(ICheck):
             return str(access_token)
 
         if response.status_code == 401:
-            logging.debug("error during authentication:", response.status_code, response.headers)
+            logging.error("Authentication failed:", response.status_code, response.headers)
             raise Exception("Error occured: Unauthenticated: ", response.status_code)
 
         raise Exception("Unexpected Status Code", response.status_code)
