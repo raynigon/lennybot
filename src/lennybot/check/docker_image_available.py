@@ -114,26 +114,38 @@ class DockerImageAvailableCheck(ICheck):
             "access_type": "offline",
         }
 
-        registry_data = self._container_config.registries[registry]
-        password = registry_data.password
-        username = registry_data.username
-
         url = f"{authentication_header.realm}?{urlencode(params)}"
-        response = requests.get(url, auth=(username, password))
+
+        if registry in self._container_config.registries.keys():
+            registry_data = self._container_config.registries[registry]
+            password = registry_data.password
+            username = registry_data.username
+            response = requests.get(url, auth=(username, password))
+
+        if registry not in self._container_config.registries.keys():
+            logging.debug("Registry not found in config")
+            response = requests.get(url)
 
         if response.status_code == 200:
             token_data = response.json()
 
-            access_token = token_data.get("token")
-
-            if token_data.get("token") is None:
+            access_token = None
+            if "token" in token_data.keys():
+                access_token = token_data.get("token")
+            elif "access_token" in token_data.keys():
                 access_token = token_data.get("access_token")
+            else:
+                raise Exception("No Access_Token found in response body")
 
             return str(access_token)
 
         if response.status_code == 401:
             logging.error("Authentication failed:", response.status_code, response.headers)
             raise Exception("Error occured: Unauthenticated: ", response.status_code)
+
+        if response.status_code == 404:
+            logging.error("Nothing Found:", response.status_code, response.headers)
+            raise Exception("Error occured: Nothing Found: ", response.status_code)
 
         raise Exception("Unexpected Status Code", response.status_code)
 
