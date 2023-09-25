@@ -1,4 +1,3 @@
-import os
 import unittest
 
 from lennybot.check.docker_image_available import DockerImageAvailableCheck, WwwAuthenticateHeader
@@ -61,7 +60,7 @@ class TestAuthenticateImage(unittest.TestCase):
         self.assertIsNotNone(access_token)
 
     def test_authenticate_without_credentials_in_config(self):
-        self.config._image_pattern = "quay.io/argo/proj/argocd:v{{version}}"
+        self.config._image_pattern = "quay.io/argoproj/argocd:v{{version}}"
         header_value = WwwAuthenticateHeader(
             "https://quay.io/v2/auth", "repository:argoproj/argocd:pull", "token-service"
         )
@@ -69,13 +68,16 @@ class TestAuthenticateImage(unittest.TestCase):
         self.assertIsNotNone(access_token)
 
     def test_authenticate_on_registry_wrong_credentials(self):
-        self.config._image_pattern = "quay.io/argoproj/argocd:v{{version}}"
-        registry = LennyBotConfigContainerRegistry("quay.io")
+        self.config._image_pattern = "ghcr.io/brose-ebike/postgres-operator:v{{version}}"
+        registry = LennyBotConfigContainerRegistry("ghcr.io")
         registry._username = "ABCD"
         registry._password = "1234"
-        self.container_config._registries["quay.io"] = registry
+        self.container_config._registries["ghcr.io"] = registry
         header_value = WwwAuthenticateHeader(
-            "https://quay.io/v2/auth", "repository:argoproj/argocd:pull", "token-service"
+            "https://ghcr.io/v2/auth", "repository:brose-ebike/postgres-operator:pull", "token-service"
         )
-        access_token = self.docker_image_check._authenticate_on_registry(registry.name, header_value)
-        self.assertIsNotNone(access_token)
+
+        with self.assertRaises(Exception) as context:
+            access_token = self.docker_image_check._authenticate_on_registry(registry.name, header_value)
+            self.assertIsNone(access_token)
+        self.assertFalse('Fails due wrong credentials' in str(context.exception))
