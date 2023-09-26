@@ -140,7 +140,11 @@ class DockerImageAvailableCheck(ICheck):
 
         if response.status_code == 401:
             logging.error("Authentication failed:", response.status_code, response.headers)
-            raise Exception("Error occured: Unauthenticated: ", response.status_code)
+            raise Exception("Error occurred: Unauthenticated: ", response.status_code)
+
+        if response.status_code == 403:
+            logging.error("Authorization failed:", response.status_code, response.headers)
+            raise Exception("Error occurred: Unauthorization: ", response.status_code)
 
         if response.status_code == 404:
             logging.error("Nothing Found:", response.status_code, response.headers)

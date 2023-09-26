@@ -80,4 +80,4 @@ class TestAuthenticateImage(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             access_token = self.docker_image_check._authenticate_on_registry(registry.name, header_value)
             self.assertIsNone(access_token)
-        self.assertFalse('Fails due wrong credentials' in str(context.exception))
+        self.assertFalse("Fails due wrong credentials" in str(context.exception))
