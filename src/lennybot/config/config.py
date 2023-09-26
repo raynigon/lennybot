@@ -320,9 +320,13 @@ class LennyBotConfig:
             parts = key.removeprefix("LB_CONTAINER_REGISTRY_").split("_")
             registry = parts[0]
             suffix = parts[1]
-            if registry not in self._container._registries:
-                raise Exception("REGISTRY NOT FOUND")
-            registry_data = self._container._registries[registry]
+            registry_data = None
+            for k, v in self._container._registries.items():
+                if k.lower() == registry.lower():
+                    registry_data = v
+                    break
+            if registry_data is None:
+                raise Exception(f"Registry {registry} was not found in configuration")
             if suffix == "USERNAME":
                 registry_data._username = os.environ[key]
             elif suffix == "PASSWORD":
