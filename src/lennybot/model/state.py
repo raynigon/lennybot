@@ -13,6 +13,8 @@ class LennyBotState:
         self._hash = self._calculate_hash()
         with open(self._filename, encoding="utf-8") as file_ptr:
             self._data = yaml.safe_load(file_ptr)
+        if self._data is None:
+            self._data = {}
 
     def _init_file(self):
         if not os.path.exists(self._filename):
