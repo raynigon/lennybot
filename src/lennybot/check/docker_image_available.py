@@ -121,8 +121,7 @@ class DockerImageAvailableCheck(ICheck):
             password = registry_data.password
             username = registry_data.username
             response = requests.get(url, auth=(username, password))
-
-        if registry not in self._container_config.registries.keys():
+        else:
             logging.debug("Registry not found in config")
             response = requests.get(url)
 
