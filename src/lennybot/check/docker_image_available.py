@@ -148,7 +148,7 @@ class DockerImageAvailableCheck(ICheck):
 
         if response.status_code == 404:
             logging.error("Nothing Found:", response.status_code, response.headers)
-            raise Exception("Error occured: Nothing Found: ", response.status_code)
+            raise Exception("Error occurred: Nothing Found: ", response.status_code)
 
         raise Exception("Unexpected Status Code", response.status_code)
 
