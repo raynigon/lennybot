@@ -321,9 +321,9 @@ class LennyBotConfig:
             registry = parts[0]
             suffix = parts[1]
             registry_data = None
-            for k, v in self._container._registries.items():
-                if k.lower() == registry.lower():
-                    registry_data = v
+            for name, data in self._container._registries.items():
+                if name.lower() == registry.lower():
+                    registry_data = data
                     break
             if registry_data is None:
                 raise Exception(f"Registry {registry} was not found in configuration")
