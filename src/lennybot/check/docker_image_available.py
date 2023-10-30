@@ -118,8 +118,10 @@ class DockerImageAvailableCheck(ICheck):
 
         if registry in self._container_config.registries.keys():
             registry_data = self._container_config.registries[registry]
-            password = registry_data.password
             username = registry_data.username
+            password = registry_data.password
+            if "<REDACTED>" in [username, password]:
+                logging.warning("Either username or password contain '<REDACTED>' and probably have not been overwritten")
             response = requests.get(url, auth=(username, password))
         else:
             logging.debug("Registry not found in config")
@@ -139,15 +141,15 @@ class DockerImageAvailableCheck(ICheck):
             return str(access_token)
 
         if response.status_code == 401:
-            logging.error("Authentication failed:", response.status_code, response.headers)
+            logging.error("Authentication failed: %d with %s", response.status_code, response.headers)
             raise Exception("Error occurred: Unauthenticated: ", response.status_code)
 
         if response.status_code == 403:
-            logging.error("Authorization failed:", response.status_code, response.headers)
+            logging.error("Authorization failed: %d with %s", response.status_code, response.headers)
             raise Exception("Error occurred: Unauthorization: ", response.status_code)
 
         if response.status_code == 404:
-            logging.error("Nothing Found:", response.status_code, response.headers)
+            logging.error("Nothing Found:  %d with %s", response.status_code, response.headers)
             raise Exception("Error occurred: Nothing Found: ", response.status_code)
 
         raise Exception("Unexpected Status Code", response.status_code)
