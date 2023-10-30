@@ -121,7 +121,9 @@ class DockerImageAvailableCheck(ICheck):
             username = registry_data.username
             password = registry_data.password
             if "<REDACTED>" in [username, password]:
-                logging.warning("Either username or password contain '<REDACTED>' and probably have not been overwritten")
+                logging.warning(
+                    "Either username or password contain '<REDACTED>' and probably have not been overwritten"
+                )
             response = requests.get(url, auth=(username, password))
         else:
             logging.debug("Registry not found in config")
