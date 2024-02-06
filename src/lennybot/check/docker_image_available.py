@@ -180,11 +180,10 @@ class DockerImageAvailableCheck(ICheck):
 
         request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"
 
+        headers = {"Accept": "application/vnd.oci.image.index.v1+json"}
         if access_token is not None:
-            headers = {"Authorization": f"Bearer {access_token}"}
-            response = requests.get(request_url, headers=headers)
-        else:
-            response = requests.get(request_url)
+            headers["Authorization"] = f"Bearer {access_token}"
+        response = requests.get(request_url, headers=headers)
 
         if response.status_code == 401 and access_token is None:
             registry = image._registry
