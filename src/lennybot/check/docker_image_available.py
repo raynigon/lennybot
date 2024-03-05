@@ -184,8 +184,8 @@ class DockerImageAvailableCheck(ICheck):
         # https://github.com/goharbor/harbor/issues/16075
         headers = {
             "Accept": "application/vnd.oci.image.index.v1+json",
-            "Accept": "application/vnd.docker.distribution.manifest.list.v2+json"
-            }
+            "Accept": "application/vnd.docker.distribution.manifest.list.v2+json",
+        }
         if access_token is not None:
             headers["Authorization"] = f"Bearer {access_token}"
         response = requests.get(request_url, headers=headers)
