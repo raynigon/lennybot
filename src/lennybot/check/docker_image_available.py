@@ -180,7 +180,11 @@ class DockerImageAvailableCheck(ICheck):
 
         request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"
 
-        headers = {"Accept": "application/vnd.oci.image.index.v1+json"}
+        # depending on the registry it my helps adding the write accept header :)
+        # https://github.com/goharbor/harbor/issues/16075
+        headers = {
+            "Accept": "application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json",
+        }
         if access_token is not None:
             headers["Authorization"] = f"Bearer {access_token}"
         response = requests.get(request_url, headers=headers)
