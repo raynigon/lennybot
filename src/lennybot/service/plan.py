@@ -47,7 +47,7 @@ class LennyBotApplication:
 
         for check in self._checks:
             if not check.check():
-                self._log.info("Check '%s' failed for application '%s'", check.__class__.__name__, self.name)
+                self._log.warning("Check '%s' failed for application '%s'", check.__class__.__name__, self.name)
                 return False
         return True
 
