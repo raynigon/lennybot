@@ -12,7 +12,9 @@ from .source import create_source
 
 
 class LennyBotApplication:
-    def __init__(self, config: LennyBotAppConfig, global_config: LennyBotConfig, github) -> None:
+    def __init__(
+        self, config: LennyBotAppConfig, global_config: LennyBotConfig, github
+    ) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._name = config.name
         self._config = config
@@ -31,7 +33,13 @@ class LennyBotApplication:
         self._current_version = state.current_version(self._name)
         self._latest_version = self._source.latest_version()
         for config in self._config._checks:
-            check = create_check(self.name, self._current_version, self._latest_version, config, self._global_config)
+            check = create_check(
+                self.name,
+                self._current_version,
+                self._latest_version,
+                config,
+                self._global_config,
+            )
             self._checks.append(check)
 
     def should_update(self) -> bool:
@@ -47,7 +55,13 @@ class LennyBotApplication:
 
         for check in self._checks:
             if not check.check():
-                self._log.warning("Check '%s' failed for application '%s'", check.__class__.__name__, self.name)
+                self._log.warning(
+                    "Check '%s' failed for application '%s' with current version '%s' and latest version '%s'",
+                    check.__class__.__name__,
+                    self.name,
+                    self._current_version,
+                    self._latest_version,
+                )
                 return False
         return True
 
@@ -56,7 +70,9 @@ class LennyBotApplication:
             raise Exception("Application is initialized")
         result = []
         for config in self._action_configs:
-            action = create_action(self.name, self._current_version, self._latest_version, config)
+            action = create_action(
+                self.name, self._current_version, self._latest_version, config
+            )
             result.append(action)
         return result
 
@@ -67,7 +83,9 @@ class PlanService:
         self._github = github
         self._applications: List[LennyBotApplication] = []
         for app_config in config.applications:
-            self._applications.append(LennyBotApplication(app_config, config, self._github))
+            self._applications.append(
+                LennyBotApplication(app_config, config, self._github)
+            )
 
     def plan(self, state: LennyBotState) -> LennyBotPlan:
         actions = []

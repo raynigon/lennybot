@@ -22,11 +22,19 @@ CONFIGURATION_OPTIONS = {
     },
     "state": {
         "type": "object",
-        "properties": {"file": {"type": "string", "required": True, "attribute": "_state_file"}},
+        "properties": {
+            "file": {"type": "string", "required": True, "attribute": "_state_file"}
+        },
     },
     "logging": {
         "type": "object",
-        "properties": {"level": {"type": "string", "required": False, "attribute": "_logging_level"}},
+        "properties": {
+            "level": {
+                "type": "string",
+                "required": False,
+                "attribute": "_logging_level",
+            }
+        },
     },
     "container": {
         "type": "object",
@@ -56,7 +64,11 @@ CONFIGURATION_OPTIONS = {
                 "attribute": "_source",
                 "properties": {
                     "type": {"type": "string", "required": True, "attribute": "_type"},
-                    "repository": {"type": "string", "required": True, "attribute": "_repository"},
+                    "repository": {
+                        "type": "string",
+                        "required": True,
+                        "attribute": "_repository",
+                    },
                     "regex": {"type": "string", "attribute": "_regex"},
                 },
             },
@@ -259,7 +271,10 @@ class LennyBotConfig:
 
     def _configure_logging(self):
         logging_level = logging._nameToLevel.get(self._logging_level, logging.DEBUG)
-        logging.basicConfig(level=logging_level, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+        logging.basicConfig(
+            level=logging_level,
+            format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        )
         self._log = logging.getLogger(self.__class__.__name__)
         self._log.debug("Logging was configured")
 
@@ -293,7 +308,9 @@ class LennyBotConfig:
             return
         if config_type == "list":
             if attribute_name is None:
-                raise Exception("Attribute name was not set, but is needed for config_type list")
+                raise Exception(
+                    "Attribute name was not set, but is needed for config_type list"
+                )
             attribute_name = attribute_name.split(".")[-1]
             for item in data[name]:
                 array_target = globals()[property["class"]]()

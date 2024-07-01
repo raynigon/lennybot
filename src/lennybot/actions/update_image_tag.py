@@ -5,7 +5,9 @@ from .iaction import IAction
 
 
 class UpdateImageTagAction(IAction):
-    def __init__(self, name, source_version, target_version, config: LennyBotActionConfig) -> None:
+    def __init__(
+        self, name, source_version, target_version, config: LennyBotActionConfig
+    ) -> None:
         self._name = name
         self._image = config.image
         if config.kustomize_path is None:

@@ -5,14 +5,20 @@ from urllib.parse import urlencode
 
 import requests
 
-from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig, LennyBotConfigContainerRegistry
+from ..config.config import (
+    LennyBotCheckConfig,
+    LennyBotConfigContainerConfig,
+    LennyBotConfigContainerRegistry,
+)
 from .icheck import ICheck
 
 PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
 
 
 class DockerImage:
-    def __init__(self, registry: Optional[str], name: str, tag: Optional[str] = None) -> None:
+    def __init__(
+        self, registry: Optional[str], name: str, tag: Optional[str] = None
+    ) -> None:
         self._registry = registry
         self._name = name
         self._tag = tag
@@ -79,17 +85,28 @@ class DockerImageAvailableCheck(ICheck):
             raise Exception("Image pattern does not contain a tag seperator")
 
         image_name = self._image_pattern.split(":")[0]
-        image_tag = self._image_pattern.split(":")[1].replace("{{version}}", self.target_version)
+        image_tag = self._image_pattern.split(":")[1].replace(
+            "{{version}}", self.target_version
+        )
 
         match = re.match(PATTERN, image_name)
         if match is None:
-            raise Exception(f"Given image pattern is not a valid docker image name {image_name}")
+            raise Exception(
+                f"Given image pattern is not a valid docker image name {image_name}"
+            )
         logging.debug("regex matched following pattern: " + match.group(0))
         if match.group(1) is not None:
             logging.debug("regex matched following pattern: " + match.group(1))
             return DockerImage(None, "library/" + match.group(1), image_tag)
         if match.group(2) is not None:
-            logging.debug("regex matched following pattern: " + match.group(2) + "/" + match.group(3) + " " + image_tag)
+            logging.debug(
+                "regex matched following pattern: "
+                + match.group(2)
+                + "/"
+                + match.group(3)
+                + " "
+                + image_tag
+            )
             return DockerImage(None, match.group(2) + "/" + match.group(3), image_tag)
         if match.group(4) is not None:
             logging.debug(
@@ -102,10 +119,18 @@ class DockerImageAvailableCheck(ICheck):
                 + " "
                 + image_tag
             )
-            return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
-        return DockerImage(match.group(7), match.group(8) + "/" + match.group(9) + "/" + match.group(10), image_tag)
+            return DockerImage(
+                match.group(4), match.group(5) + "/" + match.group(6), image_tag
+            )
+        return DockerImage(
+            match.group(7),
+            match.group(8) + "/" + match.group(9) + "/" + match.group(10),
+            image_tag,
+        )
 
-    def _authenticate_on_registry(self, registry: str, authentication_header: WwwAuthenticateHeader) -> str:
+    def _authenticate_on_registry(
+        self, registry: str, authentication_header: WwwAuthenticateHeader
+    ) -> str:
         params = {
             "scope": authentication_header.scope,
             "grant_type": "password",
@@ -143,15 +168,25 @@ class DockerImageAvailableCheck(ICheck):
             return str(access_token)
 
         if response.status_code == 401:
-            logging.error("Authentication failed: %d with %s", response.status_code, response.headers)
+            logging.error(
+                "Authentication failed: %d with %s",
+                response.status_code,
+                response.headers,
+            )
             raise Exception("Error occurred: Unauthenticated: ", response.status_code)
 
         if response.status_code == 403:
-            logging.error("Authorization failed: %d with %s", response.status_code, response.headers)
+            logging.error(
+                "Authorization failed: %d with %s",
+                response.status_code,
+                response.headers,
+            )
             raise Exception("Error occurred: Unauthorization: ", response.status_code)
 
         if response.status_code == 404:
-            logging.error("Nothing Found:  %d with %s", response.status_code, response.headers)
+            logging.error(
+                "Nothing Found:  %d with %s", response.status_code, response.headers
+            )
             raise Exception("Error occurred: Nothing Found: ", response.status_code)
 
         raise Exception("Unexpected Status Code", response.status_code)
@@ -160,7 +195,9 @@ class DockerImageAvailableCheck(ICheck):
         """
         Checks if the given Docker file exists on DockerHub
         """
-        url = f"https://hub.docker.com/v2/repositories/{image._name}/tags?page_size=10000"
+        url = (
+            f"https://hub.docker.com/v2/repositories/{image._name}/tags?page_size=10000"
+        )
         response = requests.get(url)
         if response.status_code != 200:
             raise Exception(f"Unexpected status: {response.status_code} for url: {url}")
@@ -170,7 +207,9 @@ class DockerImageAvailableCheck(ICheck):
                 return True
         return False
 
-    def _exists_on_registry(self, image: DockerImage, access_token: Optional[str] = None) -> bool:
+    def _exists_on_registry(
+        self, image: DockerImage, access_token: Optional[str] = None
+    ) -> bool:
         """
         Checks if the given Docker file exists on that perticular registry.
         Also authenticated requests are handled within this function by providing an access token.
@@ -178,7 +217,9 @@ class DockerImageAvailableCheck(ICheck):
         if image._registry is None:
             raise Exception("registry must be set and not be None")
 
-        request_url = f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"
+        request_url = (
+            f"https://{image._registry}/v2/{image._name}/manifests/{image._tag}"
+        )
 
         # depending on the registry it my helps adding the write accept header :)
         # https://github.com/goharbor/harbor/issues/16075
@@ -199,4 +240,6 @@ class DockerImageAvailableCheck(ICheck):
             return True
         if response.status_code == 404:
             return False
-        raise Exception(f"Unexpected status: {response.status_code} for url {request_url}")
+        raise Exception(
+            f"Unexpected status: {response.status_code} for url {request_url}"
+        )
