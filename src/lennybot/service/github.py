@@ -20,27 +20,21 @@ class GitHubService:
         url = f"https://api.github.com/repos/{repository}/releases/latest"
         response = requests.get(url, headers=self._headers())
         if response.status_code != 200:
-            raise Exception(
-                f"Unable to fetch latest version, Status: {response.status_code}, Content: {response.text}"
-            )
+            raise Exception(f"Unable to fetch latest version, Status: {response.status_code}, Content: {response.text}")
         return response.json()
 
     def fetch_tags(self, repository: str) -> List:
         url = f"https://api.github.com/repos/{repository}/git/refs/tags"
         response = requests.get(url, headers=self._headers())
         if response.status_code != 200:
-            raise Exception(
-                f"Unable to fetch latest version, Status: {response.status_code}, Content: {response.text}"
-            )
+            raise Exception(f"Unable to fetch latest version, Status: {response.status_code}, Content: {response.text}")
         return response.json()
 
     def create_pr(self, branch_name, title, body):
         if self._github is None:
             raise Exception("GitHub is not configured")
         repo = self._github.get_repo(self._config.github_pr.repository)
-        new_pull = repo.create_pull(
-            repo.default_branch, branch_name, title=title, body=body
-        )
+        new_pull = repo.create_pull(repo.default_branch, branch_name, title=title, body=body)
         labels = self._get_or_create_labels(repo)
         new_pull.add_to_labels(*labels)
         pulls = self._find_own_pulls()
@@ -74,7 +68,5 @@ class GitHubService:
         for label in repo.get_labels():
             if label.name == "dependencies":
                 return [label]
-        label = repo.create_label(
-            "dependencies", "0366d6", "Pull requests that update a dependency file"
-        )
+        label = repo.create_label("dependencies", "0366d6", "Pull requests that update a dependency file")
         return [label]

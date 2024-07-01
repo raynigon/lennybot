@@ -12,9 +12,7 @@ from .source import create_source
 
 
 class LennyBotApplication:
-    def __init__(
-        self, config: LennyBotAppConfig, global_config: LennyBotConfig, github
-    ) -> None:
+    def __init__(self, config: LennyBotAppConfig, global_config: LennyBotConfig, github) -> None:
         self._log = logging.getLogger(self.__class__.__name__)
         self._name = config.name
         self._config = config
@@ -70,9 +68,7 @@ class LennyBotApplication:
             raise Exception("Application is initialized")
         result = []
         for config in self._action_configs:
-            action = create_action(
-                self.name, self._current_version, self._latest_version, config
-            )
+            action = create_action(self.name, self._current_version, self._latest_version, config)
             result.append(action)
         return result
 
@@ -83,9 +79,7 @@ class PlanService:
         self._github = github
         self._applications: List[LennyBotApplication] = []
         for app_config in config.applications:
-            self._applications.append(
-                LennyBotApplication(app_config, config, self._github)
-            )
+            self._applications.append(LennyBotApplication(app_config, config, self._github))
 
     def plan(self, state: LennyBotState) -> LennyBotPlan:
         actions = []

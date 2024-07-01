@@ -7,9 +7,7 @@ from .isource import ISource
 
 
 class GithubQuerySource(ISource):
-    def __init__(
-        self, name, config: LennyBotSourceConfig, github: GitHubService
-    ) -> None:
+    def __init__(self, name, config: LennyBotSourceConfig, github: GitHubService) -> None:
         self._name = name
         self._github = github
         self._repository = config.repository

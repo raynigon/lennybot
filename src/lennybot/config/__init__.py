@@ -1,7 +1,1 @@
-from .config import (
-    LennyBotActionConfig,
-    LennyBotAppConfig,
-    LennyBotCheckConfig,
-    LennyBotConfig,
-    LennyBotSourceConfig,
-)
+from .config import LennyBotActionConfig, LennyBotAppConfig, LennyBotCheckConfig, LennyBotConfig, LennyBotSourceConfig

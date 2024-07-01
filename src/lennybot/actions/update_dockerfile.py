@@ -7,9 +7,7 @@ from .iaction import IAction
 class UpdateDockerfileAction(IAction):
     FROM_PATTERN = r"FROM ([^:]*):[^\s]*(.*)"
 
-    def __init__(
-        self, name, source_version, target_version, config: LennyBotActionConfig
-    ) -> None:
+    def __init__(self, name, source_version, target_version, config: LennyBotActionConfig) -> None:
         self._name = name
         self._source_version = source_version
         self._target_version = target_version
@@ -41,9 +39,7 @@ class UpdateDockerfileAction(IAction):
         for line in lines:
             match = re.match(self.FROM_PATTERN, line)
             if match is not None and match.group(1) == self._image_name:
-                result.append(
-                    f"FROM {self._image_name}:{self._create_value()}{match.group(2)}\n"
-                )
+                result.append(f"FROM {self._image_name}:{self._create_value()}{match.group(2)}\n")
                 continue
             result.append(line)
         with open(self._target_file, "w", encoding="utf-8") as file_ptr:

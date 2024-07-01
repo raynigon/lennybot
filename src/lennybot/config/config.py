@@ -22,9 +22,7 @@ CONFIGURATION_OPTIONS = {
     },
     "state": {
         "type": "object",
-        "properties": {
-            "file": {"type": "string", "required": True, "attribute": "_state_file"}
-        },
+        "properties": {"file": {"type": "string", "required": True, "attribute": "_state_file"}},
     },
     "logging": {
         "type": "object",
@@ -308,9 +306,7 @@ class LennyBotConfig:
             return
         if config_type == "list":
             if attribute_name is None:
-                raise Exception(
-                    "Attribute name was not set, but is needed for config_type list"
-                )
+                raise Exception("Attribute name was not set, but is needed for config_type list")
             attribute_name = attribute_name.split(".")[-1]
             for item in data[name]:
                 array_target = globals()[property["class"]]()

@@ -54,9 +54,7 @@ class LennyBot:
             self._branch_name = f"{self._branch_name}-"
         self._branch_name = f"{self._branch_name}{now}"
         self._log.debug(f"Determined branch name {self._branch_name}")
-        result = subprocess.call(
-            ["git", "config", "--global", "--add", "safe.directory", os.getcwd()]
-        )
+        result = subprocess.call(["git", "config", "--global", "--add", "safe.directory", os.getcwd()])
         if result != 0:
             self._log.error("Unexpected return code from git config")
         self._repo = Repo("./", odbt=GitDB)  # type: ignore
@@ -82,9 +80,7 @@ class LennyBot:
         body += "To resolve any conflict try to run the lennybot again\n"
         # Git Commit and Push
         self._repo.config_writer().set_value("user", "name", "lennybot").release()
-        self._repo.config_writer().set_value(
-            "user", "email", "lennybot@raynigon.com"
-        ).release()
+        self._repo.config_writer().set_value("user", "email", "lennybot@raynigon.com").release()
         self._repo.git.add(A=True)
         self._repo.git.commit(m=title)
         self._repo.git.push("--set-upstream", "origin", self._branch_name)
