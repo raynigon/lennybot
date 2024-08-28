@@ -31,7 +31,13 @@ The lennybot allows to define multiple applications.
 Each application has to have a version source, which can be queried to determine the latest version.
 If a newer version is available, the lennybot executes multiple pre defined actions per application.
 E.g. Update Docker Image Tags.
-The applications, sources and actions can be configured in the `config.yml` file.
+Sometimes there are conditions which need to be fulfilled before the action can be executed.
+These conditions can be specified as checks.
+E.g. Check if the docker image is available in the registry, because sometimes a new version of an applications gets released, but the docker image is not available yet.
+
+![A graph showing the process of updating applications by the lennybot](./docs/LennyBot-Execution.drawio.png)
+
+The applications, sources, checks and actions can be configured in the `config.yml` file.
 For more information see below.
 
 ## Configuration
