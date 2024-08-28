@@ -52,19 +52,16 @@ Each section represents a configuration object.
 
 | Path                                       | Description                                                            |
 |--------------------------------------------|------------------------------------------------------------------------|
-| state.file                                 | The state file which is used to store the version of each application  |
 | state.pr.enabled                           | Toggle PR creation in CI mode. Has to be either true or false          |
 | state.pr.repository                        | The name of the repository in github on which the PR should be created |
 | state.pr.branchPrefix                      | Prefix for the branch name which should be used to create the PRs      |
 
 ### Applications
 
-| Path                                       | Description                                                                                                                                |
+| Property                                   | Description                                                                                                                                |
 |--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
 | applications[*].name                       | The name of the application which should be updated                                                                                        |
-| applications[*].source.type                | The source has to be either of the type "github" or of the type "github-query". See below for details. |
-| applications[*].source.repository          | The GitHub Repository which should be used to determine the latest version                    |
-| applications[*].source.regex               | The regex pattern which is used to extract the semver version code from the tag value         |
+| applications[*].source                     | The configuration for the source of the latest version. This is specific to the type of source, see below for the diffrent source types.   |
 | applications[\*].actions[\*].type          | The action has to be one of these types "image-tag-update", "download-resources" or "update-yaml". See below for details. |
 | applications[\*].actions[\*].url           |                                                                                                                                            |
 | applications[\*].actions[\*].target        |                                                                                                                                            |
@@ -75,19 +72,59 @@ Each section represents a configuration object.
 | applications[\*].actions[\*].yamlPath      |                                                                                                                                            |
 | applications[\*].actions[\*].valuePattern  |                                                                                                                                            |
 
+### Sources
+
 #### GitHub Source
+
 <TODO>
 
+| Property             | Description                                                                                                                                |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| .type                | The source has to be either of the type "github" or of the type "github-query". See below for details.                                     |
+| .repository          | The GitHub Repository which should be used to determine the latest version                                                                 |
+| .regex               | The regex pattern which is used to extract the semver version code from the tag value                                                      |
+
+
 #### GitHub Query Source
+
 <TODO>
+
+| Property             | Description                                                                                                                                |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| .type                | The source has to be either of the type "github" or of the type "github-query". See below for details.                                     |
+| .repository          | The GitHub Repository which should be used to determine the latest version                                                                 |
+| .regex               | The regex pattern which is used to extract the semver version code from the tag value                                                      |
+
+
+### Checks
+
+<TODO>
+
+
+### Actions
 
 #### Image Tag Update Action
 <TODO>
+
+| Property                                   | Description                                                                                                                                |
+|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| .type          | The action has to be one of these types "image-tag-update", "download-resources" or "update-yaml". See below for details. |
+| .url           |                                                                                                                                            |
+| .target        |                                                                                                                                            |
+| .image         |                                                                                                                                            |
+| .kustomizePath |                                                                                                                                            |
+| .tagPattern    |                                                                                                                                            |
+| .targetFile    |                                                                                                                                            |
+| .yamlPath      |                                                                                                                                            |
+| .valuePattern  |                                                                                                                                            |
 
 #### Download Resource Action
 <TODO>
 
 #### Update YAML Action
+<TODO>
+
+#### Update JSON Action
 <TODO>
 
 #### Update Dockerfile Action
