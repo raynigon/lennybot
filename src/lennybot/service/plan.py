@@ -1,7 +1,7 @@
 import logging
 from typing import List
 
-from lennybot.check import create_check
+from ..check import create_check
 
 from ..actions import IAction, create_action
 from ..config import LennyBotAppConfig, LennyBotConfig
