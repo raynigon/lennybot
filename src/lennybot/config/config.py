@@ -143,6 +143,7 @@ class LennyBotActionConfig:
         self._url = None
         self._target_file = None
         self._yaml_path = None
+        self._json_path = None
         self._value_pattern = None
 
     @property
@@ -172,6 +173,10 @@ class LennyBotActionConfig:
     @property
     def target_file(self) -> str | None:
         return self._target_file
+
+    @property
+    def json_path(self) -> str | None:
+        return self._json_path
 
     @property
     def yaml_path(self) -> str | None:

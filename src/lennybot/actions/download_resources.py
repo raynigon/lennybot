@@ -35,7 +35,9 @@ class DownloadResourceAction(IAction):
         self._log.debug("Downloading resource from %s to %s", download_url, self._target_path)
         response = requests.get(download_url)
         if response.status_code != 200:
-            self._log.error("Unable to download resource, received status code: %d\n%s", response.status, response.text)
+            self._log.error(
+                "Unable to download resource, received status code: %d\n%s", response.status_code, response.text
+            )
             raise Exception("Unable to download resource, received status code: " + str(response.status_code))
         self._log.debug("Downloaded resources successfully")
         with open(self._target_path, "w", encoding="utf-8") as file_ptr:

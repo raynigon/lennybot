@@ -34,7 +34,9 @@ class GitHubService:
         if self._github is None:
             raise Exception("GitHub is not configured")
         repo = self._github.get_repo(self._config.github_pr.repository)
-        new_pull = repo.create_pull(repo.default_branch, branch_name, title=title, body=body)
+        new_pull = repo.create_pull(
+            repo.default_branch, branch_name, title=title, body=body
+        )  # pyright: ignore [reportGeneralTypeIssues]
         labels = self._get_or_create_labels(repo)
         new_pull.add_to_labels(*labels)
         pulls = self._find_own_pulls()
