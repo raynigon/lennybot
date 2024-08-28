@@ -1,8 +1,9 @@
-from .download_resources import DownloadResourcesAction
+from .download_resources import DownloadResourceAction
 from .iaction import IAction
 from .remove_checksums import RemoveChecksumsAction
 from .update_dockerfile import UpdateDockerfileAction
 from .update_image_tag import UpdateImageTagAction
+from .update_json import UpdateJsonAction
 from .update_yaml import UpdateYamlAction
 
 
@@ -10,8 +11,10 @@ def create_action(name, source_version, latest_version, config) -> IAction:
     action_type = config.type
     if action_type == "image-tag-update":
         return UpdateImageTagAction(name, source_version, latest_version, config)
-    if action_type == "download-resources":
-        return DownloadResourcesAction(name, source_version, latest_version, config)
+    if action_type == "download-resource" or action_type == "download-resources":
+        return DownloadResourceAction(name, source_version, latest_version, config)
+    if action_type == "update-json":
+        return UpdateJsonAction(name, source_version, latest_version, config)
     if action_type == "update-yaml":
         return UpdateYamlAction(name, source_version, latest_version, config)
     if action_type == "update-dockerfile":
