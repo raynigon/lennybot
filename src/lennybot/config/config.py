@@ -92,6 +92,7 @@ CONFIGURATION_OPTIONS = {
                     "target": {"type": "string", "attribute": "_target"},
                     "targetFile": {"type": "string", "attribute": "_target_file"},
                     "yamlPath": {"type": "string", "attribute": "_yaml_path"},
+                    "jsonPath": {"type": "string", "attribute": "_json_path"},
                     "valuePattern": {"type": "string", "attribute": "_value_pattern"},
                 },
             },
