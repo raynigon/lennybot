@@ -146,6 +146,7 @@ class LennyBotActionConfig:
         self._yaml_path = None
         self._json_path = None
         self._value_pattern = None
+        self._lts_url = None
 
     @property
     def type(self) -> str:
@@ -186,6 +187,10 @@ class LennyBotActionConfig:
     @property
     def value_pattern(self) -> str | None:
         return self._value_pattern
+
+    @property
+    def lts_url(self) -> str | None:
+        return self._lts_url
 
 
 class LennyBotAppConfig:
