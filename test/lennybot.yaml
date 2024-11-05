@@ -24,3 +24,16 @@ applications:
         targetFile: "images/quay-io/argoproj/argocd/Dockerfile"
         image: "quay.io/argoproj/argocd"
         valuePattern: "v{{version}}"
+  - name: nodejs
+    source:
+      type: "github"
+      repository: "nodejs/node"
+      regex: "v([0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,})"
+    checks:
+      - type: "docker-image-available"
+        imagePattern: "node:v{{version}}"
+    actions:
+      - type: "update-nodejs"
+        targetFile: "images/registry-hub-docker-com/library/node/Dockerfile"
+        image: "node"
+        valuePattern: "v{{version}}"
