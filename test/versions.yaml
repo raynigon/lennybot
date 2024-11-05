@@ -1,2 +1,4 @@
 grafana:
     version: 8.3.3
+nodejs:
+    version: 21.0.1
