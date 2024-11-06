@@ -26,14 +26,13 @@ applications:
         valuePattern: "v{{version}}"
   - name: nodejs
     source:
-      type: "github"
-      repository: "nodejs/node"
-      regex: "v([0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,})"
+      type: "nodejs-version"
+      ltsOnly: true
     checks:
       - type: "docker-image-available"
-        imagePattern: "node:v{{version}}"
+        imagePattern: "node:{{version}}"
     actions:
-      - type: "update-nodejs"
+      - type: "update-dockerfile"
         targetFile: "images/registry-hub-docker-com/library/node/Dockerfile"
         image: "node"
         valuePattern: "v{{version}}"

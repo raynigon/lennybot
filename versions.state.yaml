@@ -1,0 +1,4 @@
+argocd:
+    version: 2.13.0
+nodejs:
+    version: 22.11.0
