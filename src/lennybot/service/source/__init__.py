@@ -1,8 +1,8 @@
-from .source_nodejs import NodeJSVersionSource
 from ...config import LennyBotSourceConfig
 from .isource import ISource
 from .source_github import GithubSource
 from .source_github_query import GithubQuerySource
+from .source_nodejs import NodeJSVersionSource
 
 
 def create_source(name, config: LennyBotSourceConfig, github) -> ISource:

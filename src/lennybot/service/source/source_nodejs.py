@@ -1,5 +1,6 @@
-import requests
 from typing import Any
+
+import requests
 from requests.exceptions import HTTPError
 
 from ...config import LennyBotSourceConfig

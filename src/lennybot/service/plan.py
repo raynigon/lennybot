@@ -1,9 +1,8 @@
 import logging
 from typing import List
 
-from ..check import create_check
-
 from ..actions import IAction, create_action
+from ..check import create_check
 from ..config import LennyBotAppConfig, LennyBotConfig
 from ..helper import semver_2_vc
 from ..model import LennyBotPlan, LennyBotState
