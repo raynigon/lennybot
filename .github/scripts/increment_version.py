@@ -1,5 +1,3 @@
-import sys
-
 import yaml
 
 with open("version.txt", encoding="utf-8") as fp:

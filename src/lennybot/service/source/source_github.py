@@ -1,7 +1,5 @@
 import re
 
-import requests
-
 from ...config import LennyBotSourceConfig
 from ..github import GitHubService
 from .isource import ISource
