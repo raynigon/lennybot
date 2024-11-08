@@ -22,3 +22,6 @@ executionEnvironments = [
   { root = "src/test", extraPaths = ["src/test/config", "src/test/grafana" ]},
   { root = "src" }
 ]
+
+[tool.ruff]
+ignore = ["F401"]
