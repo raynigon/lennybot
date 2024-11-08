@@ -130,6 +130,10 @@ class LennyBotSourceConfig:
     def lts_only(self) -> bool:
         return bool(self._lts_only)
 
+    @lts_only.setter
+    def lts_only(self, value: bool) -> None:
+        self._lts_only = value
+
 
 class LennyBotCheckConfig:
     def __init__(self) -> None:

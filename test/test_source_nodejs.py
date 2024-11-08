@@ -13,12 +13,21 @@ class TestParseImage(unittest.TestCase):
         # get latest version from nodejs.org/dist/index.json
         # without ^v
         # min greater than 23.0.0
+        self.config.lts_only = False
 
-        self.config._lts_only = "False"
         release = NodeJSVersionSource("test-node-version", self.config)
         version = release.latest_version()
-        assert version > "23.0.0"
+
+        assert not version.startswith("v") and version > "23.0.0"
 
     def test_lts_only_true(self):
-        # get latest and lts version and latest > lts for assertion to be true
-        pass
+        # get latest
+        self.config.lts_only = False
+        latest_release = NodeJSVersionSource("test-node-version", self.config)
+
+        # get lts version
+        self.config.lts_only = True
+        lts_release = NodeJSVersionSource("test-node-version", self.config)
+
+        # assert latest > lts for assertion to be true
+        assert latest_release.latest_version() > lts_release.latest_version()
