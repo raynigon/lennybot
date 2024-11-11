@@ -49,7 +49,7 @@ class LennyBotApplication:
 
         if current_vc >= latest_vc:
             self._log.warning(
-                "For '%s' the current version '%s' is greater than '%s' downgrades are not supported",
+                "For '%s' the current version '%s' is greater than '%s'. Downgrades are not supported",
                 self._name,
                 self._current_version,
                 self._latest_version,
