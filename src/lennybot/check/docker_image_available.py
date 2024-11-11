@@ -34,6 +34,7 @@ class WwwAuthenticateHeader:
 
 
 class DockerImageAvailableCheck(ICheck):
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         application_name,
