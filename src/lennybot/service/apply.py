@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from ..model.plan import LennyBotPlan
 

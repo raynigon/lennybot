@@ -137,3 +137,5 @@ dmypy.json
 
 images/*
 images
+
+.ruff*

@@ -47,7 +47,7 @@ class LennyBot:
             pickle.dump(plan, file_ptr)
 
     def ci_setup(self):
-        self._log.debug(f"Setup CI")
+        self._log.debug("Setup CI")
         now = datetime.now().strftime("%Y%m%d%H%M%S")
         self._branch_name = f"{self._config.github_pr.branch_prefix}"
         if not self._branch_name.endswith("-"):
@@ -58,14 +58,14 @@ class LennyBot:
         if result != 0:
             self._log.error("Unexpected return code from git config")
         self._repo = Repo("./", odbt=GitDB)  # type: ignore
-        self._log.debug(f"Initialized repository")
+        self._log.debug("Initialized repository")
         head = self._repo.create_head(self._branch_name)
-        self._log.debug(f"Created Head")
+        self._log.debug("Created Head")
         head.checkout()
         self._log.info(f"Working branch is {self._branch_name}")
 
     def ci_finalize(self, plan: LennyBotPlan, result):
-        self._log.debug(f"Finalize CI")
+        self._log.debug("Finalize CI")
         if self._repo is None:
             raise Exception("Repository is non, ci_setup was not called")
         if not self._repo.index.diff(None) and not self._repo.untracked_files:

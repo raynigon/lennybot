@@ -1,7 +1,7 @@
-from types import SimpleNamespace
-
 import json
-from jsonpath_ng import parse, jsonpath
+
+from jsonpath_ng import parse
+
 from ..config.config import LennyBotActionConfig
 from .iaction import IAction
 

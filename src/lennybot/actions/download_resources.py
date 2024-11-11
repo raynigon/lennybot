@@ -1,5 +1,6 @@
-import requests
 import logging
+
+import requests
 
 from ..config.config import LennyBotActionConfig
 from .iaction import IAction

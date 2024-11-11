@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 
 import requests
 
-from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig, LennyBotConfigContainerRegistry
+from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig
 from .icheck import ICheck
 
 PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
@@ -34,6 +34,7 @@ class WwwAuthenticateHeader:
 
 
 class DockerImageAvailableCheck(ICheck):
+    # pylint: disable=too-many-positional-arguments
     def __init__(
         self,
         application_name,

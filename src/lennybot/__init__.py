@@ -91,6 +91,6 @@ def main() -> int:
         result = app.apply(plan)
         app.ci_finalize(plan, result)
     else:
-        logging.error("Unexpected Arguments", args)
+        logging.error("Unexpected Arguments: %s", args)
         return 1
     return 0

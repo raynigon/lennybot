@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 import yaml
 
@@ -67,6 +67,7 @@ CONFIGURATION_OPTIONS = {
                         "required": True,
                         "attribute": "_repository",
                     },
+                    "ltsOnly": {"type": "bool", "required": False, "attribute": "_lts_only"},
                     "regex": {"type": "string", "attribute": "_regex"},
                 },
             },
@@ -106,6 +107,8 @@ class LennyBotSourceConfig:
         self._type = None
         self._repository = None
         self._regex = None
+        self._source_url = None
+        self._lts_only = None
 
     @property
     def type(self) -> str:
@@ -118,6 +121,18 @@ class LennyBotSourceConfig:
     @property
     def regex(self) -> str:
         return str(self._regex)
+
+    @property
+    def source_url(self) -> str:
+        return str(self._source_url)
+
+    @property
+    def lts_only(self) -> bool:
+        return bool(self._lts_only)
+
+    @lts_only.setter
+    def lts_only(self, value: bool) -> None:
+        self._lts_only = value
 
 
 class LennyBotCheckConfig:

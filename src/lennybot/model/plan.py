@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import List
 
 from ..actions.iaction import IAction
 from ..model.state import LennyBotState
