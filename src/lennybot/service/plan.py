@@ -51,8 +51,8 @@ class LennyBotApplication:
             self._log.warning(
                 "For '%s' the current version '%s' is greater than '%s' with causes a downgrade of the version",
                 self._name,
-                current_vc,
-                latest_vc,
+                self._current_version,
+                self._latest_version,
             )
 
         for check in self._checks:
