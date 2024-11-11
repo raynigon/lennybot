@@ -54,6 +54,7 @@ class LennyBotApplication:
                 self._current_version,
                 self._latest_version,
             )
+            return False
 
         for check in self._checks:
             if not check.check():
