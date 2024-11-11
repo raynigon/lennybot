@@ -48,7 +48,12 @@ class LennyBotApplication:
         latest_vc = semver_2_vc(self._latest_version)
 
         if current_vc >= latest_vc:
-            return False
+            self._log.warning(
+                "For '%s' the current version '%s' is greater than '%s' with causes a downgrade of the version",
+                self._name,
+                current_vc,
+                latest_vc,
+            )
 
         for check in self._checks:
             if not check.check():
