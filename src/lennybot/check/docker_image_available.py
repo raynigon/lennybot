@@ -8,7 +8,8 @@ import requests
 from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig
 from .icheck import ICheck
 
-PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
+# PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
+PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
 
 
 class DockerImage:
@@ -104,9 +105,27 @@ class DockerImageAvailableCheck(ICheck):
                 + image_tag
             )
             return DockerImage(match.group(4), match.group(5) + "/" + match.group(6), image_tag)
+        if match.group(7) is not None:
+            logging.debug(
+                "regex matched following pattern: "
+                + match.group(7)
+                + "/"
+                + match.group(8)
+                + "/"
+                + match.group(9)
+                + "/"
+                + match.group(10)
+                + " "
+                + image_tag
+            )
+            return DockerImage(
+                match.group(7),
+                match.group(8) + "/" + match.group(9) + "/" + match.group(10),
+                image_tag,
+            )
         return DockerImage(
-            match.group(7),
-            match.group(8) + "/" + match.group(9) + "/" + match.group(10),
+            match.group(11),
+            match.group(12) + "/" + match.group(13) + "/" + match.group(14) + "/" + match.group(15),
             image_tag,
         )
 
