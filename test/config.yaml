@@ -35,7 +35,7 @@ applications:
       regex: "([0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,})"
     checks:
       - type: "docker-image-available"
-        imagePattern: "bracrebike.azurecr.io/public-ecr-aws/docker/library/redis:{{version}}-alpine"
+        imagePattern: "private.azurecr.io/public-ecr-aws/docker/library/redis:{{version}}-alpine"
     actions:
       - type: "image-tag-update"
         image: "redis"
