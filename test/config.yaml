@@ -37,7 +37,7 @@ applications:
       - type: "docker-image-available"
         imagePattern: "private.azurecr.io/public-ecr-aws/docker/library/redis:{{version}}-alpine"
     actions:
-      - type: "image-tag-update"
+      - type: "update-dockerfile"
         image: "redis"
         kustomizePath: "applications/argocd/kustomization.yaml"
         tagPattern: "{{version}}-alpine"

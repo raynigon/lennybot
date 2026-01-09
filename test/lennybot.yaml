@@ -36,3 +36,16 @@ applications:
         targetFile: "images/registry-hub-docker-com/library/node/Dockerfile"
         image: "node"
         valuePattern: "v{{version}}"
+  - name: redis
+    source:
+      type: "github"
+      repository: "redis/redis"
+      regex: "([0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,})"
+    checks:
+      - type: "docker-image-available"
+        imagePattern: "private.azurecr.io/public-ecr-aws/docker/library/redis:{{version}}-alpine"
+    actions:
+      - type: "update-dockerfile"
+        image: "redis"
+        kustomizePath: "applications/argocd/kustomization.yaml"
+        tagPattern: "{{version}}-alpine"
