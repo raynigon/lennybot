@@ -61,7 +61,7 @@ class GitHubService:
         return result
 
     def _headers(self) -> Dict:
-        headers = {}
+        headers = {"X-GitHub-Api-Version": "2022-11-28"}
         if self._token is not None:
             headers["Authorization"] = f"Bearer {self._token}"
         return headers
