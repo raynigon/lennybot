@@ -11,6 +11,14 @@
     LB_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 ```
 
+### ACR Token
+Getting the login credentials from the [azure container registry](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-authentication?tabs=azure-cli#use-az-acr-login-without-docker-daemon):
+```
+az login
+az acr login --name <acrname> --expose-token
+```
+`username: 000000-0000--0000-0000-000000000000`
+
 ### CLI
 Install package with `pip install lennybot`.
 To start the application run the `lennybot` command.
@@ -51,32 +59,32 @@ Each section represents a configuration object.
 ### State
 
 | Path       | Description                                                           |
-|------------|-----------------------------------------------------------------------|
+| ---------- | --------------------------------------------------------------------- |
 | state.file | The state file which is used to store the version of each application |
 
 ### GitHub
 
-| Path                                       | Description                                                            |
-|--------------------------------------------|------------------------------------------------------------------------|
-| state.pr.enabled                           | Toggle PR creation in CI mode. Has to be either true or false          |
-| state.pr.repository                        | The name of the repository in github on which the PR should be created |
-| state.pr.branchPrefix                      | Prefix for the branch name which should be used to create the PRs      |
+| Path                  | Description                                                            |
+| --------------------- | ---------------------------------------------------------------------- |
+| state.pr.enabled      | Toggle PR creation in CI mode. Has to be either true or false          |
+| state.pr.repository   | The name of the repository in github on which the PR should be created |
+| state.pr.branchPrefix | Prefix for the branch name which should be used to create the PRs      |
 
 ### Applications
 
-| Property                                   | Description                                                                                                                                |
-|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| applications[*].name                       | The name of the application which should be updated                                                                                        |
-| applications[*].source                     | The configuration for the source of the latest version. This is specific to the type of source, see below for the diffrent source types.   |
-| applications[\*].actions[\*].type          | The action has to be one of these types "image-tag-update", "download-resources" or "update-yaml". See below for details. |
-| applications[\*].actions[\*].url           |                                                                                                                                            |
-| applications[\*].actions[\*].target        |                                                                                                                                            |
-| applications[\*].actions[\*].image         |                                                                                                                                            |
-| applications[\*].actions[\*].kustomizePath |                                                                                                                                            |
-| applications[\*].actions[\*].tagPattern    |                                                                                                                                            |
-| applications[\*].actions[\*].targetFile    |                                                                                                                                            |
-| applications[\*].actions[\*].yamlPath      |                                                                                                                                            |
-| applications[\*].actions[\*].valuePattern  |                                                                                                                                            |
+| Property                                   | Description                                                                                                                              |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| applications[*].name                       | The name of the application which should be updated                                                                                      |
+| applications[*].source                     | The configuration for the source of the latest version. This is specific to the type of source, see below for the diffrent source types. |
+| applications[\*].actions[\*].type          | The action has to be one of these types "image-tag-update", "download-resources" or "update-yaml". See below for details.                |
+| applications[\*].actions[\*].url           |                                                                                                                                          |
+| applications[\*].actions[\*].target        |                                                                                                                                          |
+| applications[\*].actions[\*].image         |                                                                                                                                          |
+| applications[\*].actions[\*].kustomizePath |                                                                                                                                          |
+| applications[\*].actions[\*].tagPattern    |                                                                                                                                          |
+| applications[\*].actions[\*].targetFile    |                                                                                                                                          |
+| applications[\*].actions[\*].yamlPath      |                                                                                                                                          |
+| applications[\*].actions[\*].valuePattern  |                                                                                                                                          |
 
 ### Sources
 
@@ -84,22 +92,22 @@ Each section represents a configuration object.
 
 <TODO>
 
-| Property             | Description                                                                                                                                |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| .type                | The source has to be either of the type "github" or of the type "github-query". See below for details.                                     |
-| .repository          | The GitHub Repository which should be used to determine the latest version                                                                 |
-| .regex               | The regex pattern which is used to extract the semver version code from the tag value                                                      |
+| Property    | Description                                                                                            |
+| ----------- | ------------------------------------------------------------------------------------------------------ |
+| .type       | The source has to be either of the type "github" or of the type "github-query". See below for details. |
+| .repository | The GitHub Repository which should be used to determine the latest version                             |
+| .regex      | The regex pattern which is used to extract the semver version code from the tag value                  |
 
 
 #### GitHub Query Source
 
 <TODO>
 
-| Property             | Description                                                                                                                                |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| .type                | The source has to be either of the type "github" or of the type "github-query". See below for details.                                     |
-| .repository          | The GitHub Repository which should be used to determine the latest version                                                                 |
-| .regex               | The regex pattern which is used to extract the semver version code from the tag value                                                      |
+| Property    | Description                                                                                            |
+| ----------- | ------------------------------------------------------------------------------------------------------ |
+| .type       | The source has to be either of the type "github" or of the type "github-query". See below for details. |
+| .repository | The GitHub Repository which should be used to determine the latest version                             |
+| .regex      | The regex pattern which is used to extract the semver version code from the tag value                  |
 
 
 ### Checks
@@ -112,17 +120,17 @@ Each section represents a configuration object.
 #### Image Tag Update Action
 <TODO>
 
-| Property                                   | Description                                                                                                                                |
-|--------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| Property       | Description                                                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | .type          | The action has to be one of these types "image-tag-update", "download-resources" or "update-yaml". See below for details. |
-| .url           |                                                                                                                                            |
-| .target        |                                                                                                                                            |
-| .image         |                                                                                                                                            |
-| .kustomizePath |                                                                                                                                            |
-| .tagPattern    |                                                                                                                                            |
-| .targetFile    |                                                                                                                                            |
-| .yamlPath      |                                                                                                                                            |
-| .valuePattern  |                                                                                                                                            |
+| .url           |                                                                                                                           |
+| .target        |                                                                                                                           |
+| .image         |                                                                                                                           |
+| .kustomizePath |                                                                                                                           |
+| .tagPattern    |                                                                                                                           |
+| .targetFile    |                                                                                                                           |
+| .yamlPath      |                                                                                                                           |
+| .valuePattern  |                                                                                                                           |
 
 #### Download Resource Action
 <TODO>
@@ -138,7 +146,7 @@ Each section represents a configuration object.
 
 ## Origin
 Once upon time a colleague (Lenny) left my team.
-Besides being an Apache Solr genius, one of the tasks he really liked doing, 
+Besides being an Apache Solr genius, one of the tasks he really liked doing,
 was the updating of the dependencies in our applications.
 Since everyone else in the team didnt like this job, we needed some automation for this.
 The lennybot was born to replace our colleague.
