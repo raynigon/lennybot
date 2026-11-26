@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -14,9 +16,10 @@ jobs:
     - name: Get current date
       id: params
       run: |
-        echo "latest=$(git describe --tags `git rev-list --tags --max-count=1`)" >> $GITHUB_OUTPUT
         echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
         echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
+    - name: Tag Release
+      run: git tag "v${{ steps.params.outputs.version }}"
     - name: Login to Docker Hub
       uses: docker/login-action@v4
       with:
@@ -45,7 +48,7 @@ jobs:
       uses: raynigon/release-documentation@main
       with:
         token: "${{ secrets.GITHUB_TOKEN }}"
-        latest: "${{ steps.params.outputs.latest }}"
+        latest: "v${{ steps.params.outputs.version }}"
         template: |
           # What's Changed
           <!-- Features -->
@@ -83,6 +86,13 @@ jobs:
           * {{ title }} PR: #{{ number }}
           {{/pull_requests.dependencies}}
           {{/pull_requests.dependencies.length}}
+          <!-- Other Changes -->
+          {{#pull_requests._no_label.length}}
+          ## 🔧 Other Changes
+          {{#pull_requests._no_label}}
+          * {{ title }} PR: #{{ number }}
+          {{/pull_requests._no_label}}
+          {{/pull_requests._no_label.length}}
     - name: "Github Release"
       uses: softprops/action-gh-release@v3.0.4
       env:
