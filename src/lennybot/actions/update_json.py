@@ -1,6 +1,6 @@
 import json
 
-from jsonpath_ng import parse
+from jsonpath_ng.parser import parse
 
 from ..config.config import LennyBotActionConfig
 from .iaction import IAction
