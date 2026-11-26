@@ -1,4 +1,4 @@
-import yaml
+from yamlpath.common import Parsers
 
 from ..config.config import LennyBotActionConfig
 from .iaction import IAction
@@ -31,10 +31,13 @@ class UpdateImageTagAction(IAction):
         return self._target_version
 
     def run(self):
+        # Round-trip editor (same as update-yaml) so comments, quotes, block
+        # scalars and the document start marker survive the rewrite.
+        yaml = Parsers.get_yaml_editor()
         with open(self._kustomize_path, encoding="utf-8") as file_ptr:
-            kustomize = yaml.safe_load(file_ptr)
+            kustomize = yaml.load(file_ptr)
         found = False
-        for image in kustomize["images"]:
+        for image in kustomize.get("images") or []:
             if image["name"] != self._image:
                 continue
             image["newTag"] = self._create_new_tag()
@@ -43,7 +46,7 @@ class UpdateImageTagAction(IAction):
         if not found:
             raise Exception(f"Unable to find image {self._image}")
         with open(self._kustomize_path, "w", encoding="utf-8") as file_ptr:
-            yaml.safe_dump(kustomize, file_ptr, sort_keys=False, indent=4)
+            yaml.dump(kustomize, file_ptr)
 
     def _create_new_tag(self):
         return self._tag_pattern.replace("{{version}}", self._target_version)
