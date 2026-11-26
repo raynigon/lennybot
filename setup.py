@@ -4,7 +4,6 @@ https://packaging.python.org/guides/distributing-packages-using-setuptools/
 https://github.com/pypa/sampleproject
 """
 
-import pkg_resources
 # Always prefer setuptools over distutils
 from setuptools import find_packages, setup
 
@@ -20,9 +19,11 @@ def version():
 
 
 def install_requires():
+    # pkg_resources was removed from recent setuptools; requirements.txt only
+    # holds plain requirement lines, so strip comments and blanks ourselves.
     with open("requirements.txt", encoding="utf-8") as f:
-        reqs = pkg_resources.parse_requirements(f.read())
-        return [str(ir) for ir in reqs]
+        lines = [line.split("#", 1)[0].strip() for line in f]
+        return [line for line in lines if line]
 
 
 setup(
