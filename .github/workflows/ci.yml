@@ -10,9 +10,9 @@ jobs:
     name: "Linter - Black"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
       - name: Install dependencies
@@ -29,9 +29,9 @@ jobs:
     name: "Linter - Ruff"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
       - name: Install dependencies
@@ -47,9 +47,9 @@ jobs:
     name: "Linter - iSort"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
       - name: Install dependencies
@@ -64,9 +64,9 @@ jobs:
     name: "Linter - PyLint"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: 3.x
       - name: Python Pip Install
@@ -81,9 +81,9 @@ jobs:
     name: "Linter - PyRight"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
       - name: Install dependencies
@@ -99,9 +99,9 @@ jobs:
     name: "Tests"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup Python and tests
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "${{ env.PYTHON_VERSION }}"
       - name: Install dependencies
