@@ -88,26 +88,71 @@ Each section represents a configuration object.
 
 ### Sources
 
+Every source returns a dotted numeric version (e.g. `1.2.3`).
+Versions are compared component by component, so `2.10.0` is newer than `2.9.5`.
+
 #### GitHub Source
 
-<TODO>
+Uses the tag name of the latest GitHub release of the repository.
+The regex has to match the whole tag name, the first capture group is used as version.
 
-| Property    | Description                                                                                            |
-| ----------- | ------------------------------------------------------------------------------------------------------ |
-| .type       | The source has to be either of the type "github" or of the type "github-query". See below for details. |
-| .repository | The GitHub Repository which should be used to determine the latest version                             |
-| .regex      | The regex pattern which is used to extract the semver version code from the tag value                  |
+| Property    | Description                                                                                         |
+| ----------- | --------------------------------------------------------------------------------------------------- |
+| .type       | `github`                                                                                            |
+| .repository | The GitHub repository (`owner/name`) which should be used to determine the latest version           |
+| .regex      | The regex pattern which is used to extract the version from the tag name, e.g. `v([0-9]+\.[0-9]+\.[0-9]+)` |
 
+```yaml
+source:
+  type: "github"
+  repository: "argoproj/argo-cd"
+  regex: "v([0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,})"
+```
 
 #### GitHub Query Source
 
-<TODO>
+Uses all tags of the GitHub repository instead of only the latest release.
+Every tag which matches the regex is a candidate, the highest version wins.
+Use this source if the repository has no releases or publishes releases for multiple components.
 
-| Property    | Description                                                                                            |
-| ----------- | ------------------------------------------------------------------------------------------------------ |
-| .type       | The source has to be either of the type "github" or of the type "github-query". See below for details. |
-| .repository | The GitHub Repository which should be used to determine the latest version                             |
-| .regex      | The regex pattern which is used to extract the semver version code from the tag value                  |
+| Property    | Description                                                                                         |
+| ----------- | --------------------------------------------------------------------------------------------------- |
+| .type       | `github-query`                                                                                      |
+| .repository | The GitHub repository (`owner/name`) which should be used to determine the latest version           |
+| .regex      | The regex pattern which is used to extract the version from the tag name, e.g. `v([0-9]+\.[0-9]+\.[0-9]+)` |
+
+```yaml
+source:
+  type: "github-query"
+  repository: "grafana/grafana"
+  regex: "v([0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,})"
+```
+
+#### Docker Registry Query Source
+
+Uses the tags of a container image directly from an OCI registry (`GET /v2/<name>/tags/list`).
+Use this source if the image has no public GitHub repository, or if the image tags differ from the GitHub tags.
+Every tag which matches the regex is a candidate, the highest version wins.
+Paginated tag lists are followed until the last page.
+
+The registry is called anonymously by default.
+If the registry is listed under `container.registries`, its username and password are used for the token request
+(the same credentials as for the `docker-image-available` check).
+
+| Property    | Description                                                                                                         |
+| ----------- | ------------------------------------------------------------------------------------------------------------------- |
+| .type       | `docker-registry-query`                                                                                             |
+| .repository | The image reference without tag, e.g. `quay.io/argoproj/argocd`. Images without registry host resolve to Docker Hub |
+| .regex      | The regex pattern which has to match the whole tag, the first capture group is used as version                     |
+
+The following example only uses fine-grained build tags and ignores floating tags like `3.0` or `3.0-demo`:
+
+```yaml
+source:
+  type: "docker-registry-query"
+  repository: "wiziopublic.azurecr.io/wiz-app/wiz-broker"
+  regex: "^([0-9]+\\.[0-9]+\\.[0-9]+)$"
+```
 
 
 ### Checks
