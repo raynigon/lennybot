@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, call, patch
 
 from lennybot.config.config import LennyBotConfigContainerConfig, LennyBotSourceConfig
 from lennybot.service.source import create_source
@@ -81,3 +81,58 @@ class TestDockerRegistryQuerySource(unittest.TestCase):
 
         self.assertEqual("1.27.3", self.create().latest_version())
         mock_list_tags.assert_called_once_with("registry-1.docker.io", "library/nginx")
+
+
+class TestDockerRegistryQuerySourceWithRegistry(unittest.TestCase):
+    """End-to-end through the registry client, only the HTTP layer is mocked."""
+
+    def setUp(self) -> None:
+        self.config = LennyBotSourceConfig()
+        self.config._type = "docker-registry-query"
+        self.config._repository = "public-registry.wiz.io/wiz-app/wiz-broker"
+        self.config._regex = r"([0-9]+\.[0-9]+\.[0-9]+)"
+        self.source = create_source("wiz-broker", self.config, None, LennyBotConfigContainerConfig())
+
+    @patch("lennybot.helper.oci_registry.requests.get")
+    def test_latest_version_reads_registry_tags_with_bearer_token(self, mock_get):
+        challenge_response = MagicMock()
+        challenge_response.status_code = 401
+        challenge_response.headers = {
+            "Www-Authenticate": (
+                'Bearer realm="https://public-registry.wiz.io/oauth2/token",'
+                'service="public-registry.wiz.io",'
+                'scope="repository:wiz-app/wiz-broker:metadata_read"'
+            )
+        }
+
+        token_response = MagicMock()
+        token_response.status_code = 200
+        token_response.json.return_value = {"access_token": "registry-token"}
+
+        tags_response = MagicMock()
+        tags_response.status_code = 200
+        tags_response.links = {}
+        tags_response.json.return_value = {
+            "tags": ["3.0.9", "3.0.10", "3.0.11-rc", "not-a-version"],
+        }
+        mock_get.side_effect = [challenge_response, token_response, tags_response]
+
+        self.assertEqual(self.source.latest_version(), "3.0.10")
+        self.assertEqual(mock_get.call_count, 3)
+        self.assertEqual(
+            mock_get.call_args,
+            call(
+                "https://public-registry.wiz.io/v2/wiz-app/wiz-broker/tags/list?n=1000",
+                headers={"Authorization": "Bearer registry-token"},
+                timeout=30,
+            ),
+        )
+
+    @patch("lennybot.helper.oci_registry.requests.get")
+    def test_registry_error_is_reported(self, mock_get):
+        response = MagicMock()
+        response.status_code = 403
+        mock_get.return_value = response
+
+        with self.assertRaisesRegex(Exception, "Unexpected status: 403"):
+            self.source.latest_version()

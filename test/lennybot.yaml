@@ -49,3 +49,16 @@ applications:
         image: "redis"
         kustomizePath: "applications/argocd/kustomization.yaml"
         tagPattern: "{{version}}-alpine"
+  - name: wiz-broker
+    source:
+      type: "docker-registry-query"
+      repository: "public-registry.wiz.io/wiz-app/wiz-broker"
+      regex: "([0-9]+\\.[0-9]+\\.[0-9]+)"
+    checks:
+      - type: "docker-image-available"
+        imagePattern: "public-registry.wiz.io/wiz-app/wiz-broker:{{version}}"
+    actions:
+      - type: "update-dockerfile"
+        targetFile: "images/public-registry-wiz-io/wiz-app/wiz-broker/Dockerfile"
+        image: "public-registry.wiz.io/wiz-app/wiz-broker"
+        valuePattern: "{{version}}"

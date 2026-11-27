@@ -88,6 +88,16 @@ Each section represents a configuration object.
 
 ### Sources
 
+Each application has one `source`, which LennyBot queries to find its latest version.
+The source type determines where versions are read from:
+
+| `source.type`           | Version source                  | Required configuration                                  |
+| ----------------------- | ------------------------------- | ------------------------------------------------------- |
+| `github`                | Latest GitHub release           | `repository` (`owner/repo`) and `regex`                 |
+| `github-query`          | Git tags from GitHub            | `repository` (`owner/repo`) and `regex`                 |
+| `docker-registry-query` | Tags from a Docker/OCI registry | `repository` (image reference without tag) and `regex`  |
+| `nodejs-version`        | Node.js release index           | Optional `ltsOnly`                                      |
+
 Every source returns a dotted numeric version (e.g. `1.2.3`).
 Versions are compared component by component, so `2.10.0` is newer than `2.9.5`.
 
@@ -145,13 +155,48 @@ If the registry is listed under `container.registries`, its username and passwor
 | .repository | The image reference without tag, e.g. `quay.io/argoproj/argocd`. Images without registry host resolve to Docker Hub |
 | .regex      | The regex pattern which has to match the whole tag, the first capture group is used as version                     |
 
-The following example only uses fine-grained build tags and ignores floating tags like `3.0` or `3.0-demo`:
+Example: read `wiz-broker` versions directly from Wiz's public registry.
+The regex only matches fine-grained build tags and ignores floating tags like `3.0` or `3.0-rc`:
+
+```yaml
+applications:
+  - name: wiz-broker
+    source:
+      type: "docker-registry-query"
+      repository: "public-registry.wiz.io/wiz-app/wiz-broker"
+      regex: "([0-9]+\\.[0-9]+\\.[0-9]+)"
+    checks:
+      - type: "docker-image-available"
+        imagePattern: "public-registry.wiz.io/wiz-app/wiz-broker:{{version}}"
+    actions:
+      - type: "update-dockerfile"
+        targetFile: "images/public-registry-wiz-io/wiz-app/wiz-broker/Dockerfile"
+        image: "public-registry.wiz.io/wiz-app/wiz-broker"
+        valuePattern: "{{version}}"
+```
+
+For a registry that requires credentials, define it under the top-level `container.registries` section.
+Credentials can be supplied through `LB_CONTAINER_REGISTRY_<REGISTRY>_USERNAME` and `LB_CONTAINER_REGISTRY_<REGISTRY>_PASSWORD`,
+where `<REGISTRY>` is the registry key configured below.
+Public registries that allow anonymous token exchange do not need credentials.
+
+```yaml
+container:
+  registries:
+    registry.example.com:
+      username: "<username>"
+      password: "<password>"
+```
+
+#### Node.js Version Source
+
+Uses the Node.js release index (`https://nodejs.org/dist/index.json`).
+Set `ltsOnly: true` to select the latest LTS release; otherwise the latest release is used.
 
 ```yaml
 source:
-  type: "docker-registry-query"
-  repository: "wiziopublic.azurecr.io/wiz-app/wiz-broker"
-  regex: "^([0-9]+\\.[0-9]+\\.[0-9]+)$"
+  type: "nodejs-version"
+  ltsOnly: true
 ```
 
 
