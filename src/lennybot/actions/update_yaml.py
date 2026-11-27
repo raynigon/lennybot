@@ -40,7 +40,7 @@ class UpdateYamlAction(IAction):
         logging_args = SimpleNamespace(quiet=True, verbose=False, debug=False)
         log = ConsolePrinter(logging_args)
         yaml = Parsers.get_yaml_editor()
-        (yaml_data, doc_loaded) = Parsers.get_yaml_data(yaml, log, self._target_file)
+        yaml_data, doc_loaded = Parsers.get_yaml_data(yaml, log, self._target_file)
         if not doc_loaded:
             raise Exception("Yaml document could not be loaded")
         processor = Processor(log, yaml_data)
