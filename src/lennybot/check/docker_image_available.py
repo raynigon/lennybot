@@ -33,7 +33,6 @@ class DockerImageAvailableCheck(ICheck):
         self._source_version = source_version
         self._target_version = target_version
         self._image_pattern = config.image_pattern
-        self._container_config = container_config
         self._registry_client = OciRegistryClient(container_config)
 
     @property
