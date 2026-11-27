@@ -1,11 +1,11 @@
 import logging
 import re
 from typing import Optional
-from urllib.parse import urlencode
 
 import requests
 
 from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig
+from ..helper.oci_registry import OciRegistryClient, WwwAuthenticateHeader
 from .icheck import ICheck
 
 PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
@@ -16,21 +16,6 @@ class DockerImage:
         self._registry = registry
         self._name = name
         self._tag = tag
-
-
-class WwwAuthenticateHeader:
-    def __init__(self, realm: str, scope: str, service: str) -> None:
-        self.realm = realm
-        self.scope = scope
-        self.service = service
-
-    @classmethod
-    def parse(cls, response):
-        authenticate = response.headers["Www-Authenticate"]
-        realm = authenticate.split('realm="')[1].split('"')[0]
-        service = authenticate.split('service="')[1].split('"')[0]
-        scope = authenticate.split('scope="')[1].split('"')[0]
-        return WwwAuthenticateHeader(realm, scope, service)
 
 
 class DockerImageAvailableCheck(ICheck):
@@ -48,7 +33,7 @@ class DockerImageAvailableCheck(ICheck):
         self._source_version = source_version
         self._target_version = target_version
         self._image_pattern = config.image_pattern
-        self._container_config = container_config
+        self._registry_client = OciRegistryClient(container_config)
 
     @property
     def application(self) -> str:
@@ -129,63 +114,7 @@ class DockerImageAvailableCheck(ICheck):
         )
 
     def _authenticate_on_registry(self, registry: str, authentication_header: WwwAuthenticateHeader) -> str:
-        params = {
-            "scope": authentication_header.scope,
-            "grant_type": "password",
-            "service": authentication_header.service,
-            "client_id": "lennybot",
-            "access_type": "offline",
-        }
-
-        url = f"{authentication_header.realm}?{urlencode(params)}"
-
-        if registry in self._container_config.registries.keys():
-            registry_data = self._container_config.registries[registry]
-            username = registry_data.username
-            password = registry_data.password
-            if "<REDACTED>" in [username, password]:
-                logging.warning(
-                    "Either username or password contain '<REDACTED>' and probably have not been overwritten"
-                )
-            response = requests.get(url, auth=(username, password))
-        else:
-            logging.debug("Registry not found in config")
-            response = requests.get(url)
-
-        if response.status_code == 200:
-            token_data = response.json()
-
-            access_token = None
-            if "token" in token_data.keys():
-                access_token = token_data.get("token")
-            elif "access_token" in token_data.keys():
-                access_token = token_data.get("access_token")
-            else:
-                raise Exception("No Access_Token found in response body")
-
-            return str(access_token)
-
-        if response.status_code == 401:
-            logging.error(
-                "Authentication failed: %d with %s",
-                response.status_code,
-                response.headers,
-            )
-            raise Exception("Error occurred: Unauthenticated: ", response.status_code)
-
-        if response.status_code == 403:
-            logging.error(
-                "Authorization failed: %d with %s",
-                response.status_code,
-                response.headers,
-            )
-            raise Exception("Error occurred: Unauthorization: ", response.status_code)
-
-        if response.status_code == 404:
-            logging.error("Nothing Found:  %d with %s", response.status_code, response.headers)
-            raise Exception("Error occurred: Nothing Found: ", response.status_code)
-
-        raise Exception("Unexpected Status Code", response.status_code)
+        return self._registry_client.authenticate(registry, authentication_header)
 
     def _exists_on_docker_hub(self, image: DockerImage):
         """
@@ -201,10 +130,10 @@ class DockerImageAvailableCheck(ICheck):
                 return True
         return False
 
-    def _exists_on_registry(self, image: DockerImage, access_token: Optional[str] = None) -> bool:
+    def _exists_on_registry(self, image: DockerImage) -> bool:
         """
         Checks if the given Docker file exists on that perticular registry.
-        Also authenticated requests are handled within this function by providing an access token.
+        Authentication against the registry is handled by the registry client.
         """
         if image._registry is None:
             raise Exception("registry must be set and not be None")
@@ -216,16 +145,8 @@ class DockerImageAvailableCheck(ICheck):
         headers = {
             "Accept": "application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json",
         }
-        if access_token is not None:
-            headers["Authorization"] = f"Bearer {access_token}"
-        response = requests.get(request_url, headers=headers)
+        response = self._registry_client.get(image._registry, request_url, headers=headers)
 
-        if response.status_code == 401 and access_token is None:
-            registry = image._registry
-            header_value = WwwAuthenticateHeader.parse(response)
-            access_token = self._authenticate_on_registry(registry, header_value)
-
-            return self._exists_on_registry(image, access_token)
         if response.status_code == 200:
             return True
         if response.status_code == 404:
