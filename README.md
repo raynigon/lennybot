@@ -90,22 +90,50 @@ Each section represents a configuration object.
 
 #### Version Sources
 
-<TODO>
+Each application has one `source`, which LennyBot queries to find its latest version.
+The source type determines where versions are read from:
 
-| Property    | Description                                                                                            |
-| ----------- | ------------------------------------------------------------------------------------------------------ |
-| .type       | The source type: "github", "github-query", "docker-registry" or "nodejs-version".                       |
-| .repository | GitHub sources use an owner/repository; docker-registry uses `<registry>/<repository>`                  |
-| .regex      | The regex pattern which is used to extract the semver version code from the tag value                  |
+| `source.type` | Version source | Required configuration |
+| --- | --- | --- |
+| `github` | Latest GitHub release | `repository` (`owner/repo`) and `regex` |
+| `github-query` | Git tags from GitHub | `repository` (`owner/repo`) and `regex` |
+| `docker-registry` | Tags from a Docker/OCI registry | `repository` (`registry/repository`) and `regex` |
+| `nodejs-version` | Node.js release index | Optional `ltsOnly` |
 
-For example, to discover `wiz-broker` versions from Wiz's container registry rather than GitHub:
+For `github`, `github-query` and `docker-registry`, `regex` must contain a capture group for the version LennyBot should use. It is matched against the GitHub release tag, Git tag or registry tag. `github` reads the latest GitHub release; `github-query` and `docker-registry` filter matching tags and select the greatest captured version. For example, the pattern `v([0-9]+\\.[0-9]+\\.[0-9]+)` extracts `1.2.3` from a tag such as `v1.2.3`.
+
+The `docker-registry` source calls the registry's v2 tags endpoint (`/v2/<repository>/tags/list`) and handles the Bearer-token challenge used by registries such as Wiz. It reads tags from the image repository itself; GitHub releases or tags are not used. Configure the full registry hostname and repository path without a scheme, image tag or leading slash.
+
+Example: read `wiz-broker` versions directly from Wiz's public registry:
 
 ```yaml
-source:
-  type: "docker-registry"
-  repository: "public-registry.wiz.io/wiz-app/wiz-broker"
-  regex: "([0-9]+\\.[0-9]+\\.[0-9]+)"
+applications:
+  - name: wiz-broker
+    source:
+      type: "docker-registry"
+      repository: "public-registry.wiz.io/wiz-app/wiz-broker"
+      regex: "([0-9]+\\.[0-9]+\\.[0-9]+)"
+    checks:
+      - type: "docker-image-available"
+        imagePattern: "public-registry.wiz.io/wiz-app/wiz-broker:{{version}}"
+    actions:
+      - type: "update-dockerfile"
+        targetFile: "images/public-registry-wiz-io/wiz-app/wiz-broker/Dockerfile"
+        image: "public-registry.wiz.io/wiz-app/wiz-broker"
+        valuePattern: "{{version}}"
 ```
+
+For a registry that requires credentials, define it under the top-level `container.registries` section. Credentials can be supplied through `LB_CONTAINER_REGISTRY_<REGISTRY>_USERNAME` and `LB_CONTAINER_REGISTRY_<REGISTRY>_PASSWORD`, where `<REGISTRY>` is the registry key configured below. Public registries that allow anonymous token exchange do not need credentials.
+
+```yaml
+container:
+  registries:
+    registry.example.com:
+      username: "<username>"
+      password: "<password>"
+```
+
+For `nodejs-version`, set `ltsOnly: true` to select an LTS release; otherwise the source includes the latest version from the Node.js release index.
 
 ### Checks
 
