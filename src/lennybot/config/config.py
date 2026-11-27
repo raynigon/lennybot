@@ -104,11 +104,11 @@ CONFIGURATION_OPTIONS = {
 
 class LennyBotSourceConfig:
     def __init__(self) -> None:
-        self._type = None
+        self._type: Optional[str] = None
         self._repository: Optional[str] = None
         self._regex: Optional[str] = None
-        self._source_url = None
-        self._lts_only = None
+        self._source_url: Optional[str] = None
+        self._lts_only: Optional[bool] = None
 
     @property
     def type(self) -> str:
@@ -384,3 +384,7 @@ class LennyBotConfig:
     @property
     def github_pr(self) -> LennyBotGithubPr:
         return self._github_pr
+
+    @property
+    def container(self) -> LennyBotConfigContainerConfig:
+        return self._container

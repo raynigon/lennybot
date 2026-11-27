@@ -5,7 +5,7 @@ from typing import Optional
 import requests
 
 from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig
-from ..service.container_registry import WwwAuthenticateHeader, authenticate_on_registry
+from ..helper.oci_registry import OciRegistryClient, WwwAuthenticateHeader
 from .icheck import ICheck
 
 PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
@@ -33,7 +33,7 @@ class DockerImageAvailableCheck(ICheck):
         self._source_version = source_version
         self._target_version = target_version
         self._image_pattern = config.image_pattern
-        self._container_config = container_config
+        self._registry_client = OciRegistryClient(container_config)
 
     @property
     def application(self) -> str:
@@ -114,7 +114,7 @@ class DockerImageAvailableCheck(ICheck):
         )
 
     def _authenticate_on_registry(self, registry: str, authentication_header: WwwAuthenticateHeader) -> str:
-        return authenticate_on_registry(registry, authentication_header, self._container_config)
+        return self._registry_client.authenticate(registry, authentication_header)
 
     def _exists_on_docker_hub(self, image: DockerImage):
         """
@@ -130,10 +130,10 @@ class DockerImageAvailableCheck(ICheck):
                 return True
         return False
 
-    def _exists_on_registry(self, image: DockerImage, access_token: Optional[str] = None) -> bool:
+    def _exists_on_registry(self, image: DockerImage) -> bool:
         """
         Checks if the given Docker file exists on that perticular registry.
-        Also authenticated requests are handled within this function by providing an access token.
+        Authentication against the registry is handled by the registry client.
         """
         if image._registry is None:
             raise Exception("registry must be set and not be None")
@@ -145,16 +145,8 @@ class DockerImageAvailableCheck(ICheck):
         headers = {
             "Accept": "application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json",
         }
-        if access_token is not None:
-            headers["Authorization"] = f"Bearer {access_token}"
-        response = requests.get(request_url, headers=headers)
+        response = self._registry_client.get(image._registry, request_url, headers=headers)
 
-        if response.status_code == 401 and access_token is None:
-            registry = image._registry
-            header_value = WwwAuthenticateHeader.parse(response)
-            access_token = self._authenticate_on_registry(registry, header_value)
-
-            return self._exists_on_registry(image, access_token)
         if response.status_code == 200:
             return True
         if response.status_code == 404:
