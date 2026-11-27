@@ -1,11 +1,11 @@
 import logging
 import re
 from typing import Optional
-from urllib.parse import urlencode
 
 import requests
 
 from ..config.config import LennyBotCheckConfig, LennyBotConfigContainerConfig
+from ..service.container_registry import WwwAuthenticateHeader, authenticate_on_registry
 from .icheck import ICheck
 
 PATTERN = r"(?:([\-\_\.\w]+)$)|(?:([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)|(?:([\-\.A-z0-9]+)/([\-\.A-z0-9]+)/([\-\_\.\w]+)/([\-\_\.\w]+)/([\-\_\.\w]+)$)"
@@ -16,21 +16,6 @@ class DockerImage:
         self._registry = registry
         self._name = name
         self._tag = tag
-
-
-class WwwAuthenticateHeader:
-    def __init__(self, realm: str, scope: str, service: str) -> None:
-        self.realm = realm
-        self.scope = scope
-        self.service = service
-
-    @classmethod
-    def parse(cls, response):
-        authenticate = response.headers["Www-Authenticate"]
-        realm = authenticate.split('realm="')[1].split('"')[0]
-        service = authenticate.split('service="')[1].split('"')[0]
-        scope = authenticate.split('scope="')[1].split('"')[0]
-        return WwwAuthenticateHeader(realm, scope, service)
 
 
 class DockerImageAvailableCheck(ICheck):
@@ -129,63 +114,7 @@ class DockerImageAvailableCheck(ICheck):
         )
 
     def _authenticate_on_registry(self, registry: str, authentication_header: WwwAuthenticateHeader) -> str:
-        params = {
-            "scope": authentication_header.scope,
-            "grant_type": "password",
-            "service": authentication_header.service,
-            "client_id": "lennybot",
-            "access_type": "offline",
-        }
-
-        url = f"{authentication_header.realm}?{urlencode(params)}"
-
-        if registry in self._container_config.registries.keys():
-            registry_data = self._container_config.registries[registry]
-            username = registry_data.username
-            password = registry_data.password
-            if "<REDACTED>" in [username, password]:
-                logging.warning(
-                    "Either username or password contain '<REDACTED>' and probably have not been overwritten"
-                )
-            response = requests.get(url, auth=(username, password))
-        else:
-            logging.debug("Registry not found in config")
-            response = requests.get(url)
-
-        if response.status_code == 200:
-            token_data = response.json()
-
-            access_token = None
-            if "token" in token_data.keys():
-                access_token = token_data.get("token")
-            elif "access_token" in token_data.keys():
-                access_token = token_data.get("access_token")
-            else:
-                raise Exception("No Access_Token found in response body")
-
-            return str(access_token)
-
-        if response.status_code == 401:
-            logging.error(
-                "Authentication failed: %d with %s",
-                response.status_code,
-                response.headers,
-            )
-            raise Exception("Error occurred: Unauthenticated: ", response.status_code)
-
-        if response.status_code == 403:
-            logging.error(
-                "Authorization failed: %d with %s",
-                response.status_code,
-                response.headers,
-            )
-            raise Exception("Error occurred: Unauthorization: ", response.status_code)
-
-        if response.status_code == 404:
-            logging.error("Nothing Found:  %d with %s", response.status_code, response.headers)
-            raise Exception("Error occurred: Nothing Found: ", response.status_code)
-
-        raise Exception("Unexpected Status Code", response.status_code)
+        return authenticate_on_registry(registry, authentication_header, self._container_config)
 
     def _exists_on_docker_hub(self, image: DockerImage):
         """

@@ -16,7 +16,7 @@ class LennyBotApplication:
         self._name = config.name
         self._config = config
         self._global_config = global_config
-        self._source = create_source(self._name, config.source, github)
+        self._source = create_source(self._name, config.source, github, global_config._container)
         self._checks = []
         self._action_configs = config.actions
         self._current_version = None

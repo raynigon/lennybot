@@ -88,27 +88,24 @@ Each section represents a configuration object.
 
 ### Sources
 
-#### GitHub Source
+#### Version Sources
 
 <TODO>
 
 | Property    | Description                                                                                            |
 | ----------- | ------------------------------------------------------------------------------------------------------ |
-| .type       | The source has to be either of the type "github" or of the type "github-query". See below for details. |
-| .repository | The GitHub Repository which should be used to determine the latest version                             |
+| .type       | The source type: "github", "github-query", "docker-registry" or "nodejs-version".                       |
+| .repository | GitHub sources use an owner/repository; docker-registry uses `<registry>/<repository>`                  |
 | .regex      | The regex pattern which is used to extract the semver version code from the tag value                  |
 
+For example, to discover `wiz-broker` versions from Wiz's container registry rather than GitHub:
 
-#### GitHub Query Source
-
-<TODO>
-
-| Property    | Description                                                                                            |
-| ----------- | ------------------------------------------------------------------------------------------------------ |
-| .type       | The source has to be either of the type "github" or of the type "github-query". See below for details. |
-| .repository | The GitHub Repository which should be used to determine the latest version                             |
-| .regex      | The regex pattern which is used to extract the semver version code from the tag value                  |
-
+```yaml
+source:
+  type: "docker-registry"
+  repository: "public-registry.wiz.io/wiz-app/wiz-broker"
+  regex: "([0-9]+\\.[0-9]+\\.[0-9]+)"
+```
 
 ### Checks
 

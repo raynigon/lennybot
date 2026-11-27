@@ -105,8 +105,8 @@ CONFIGURATION_OPTIONS = {
 class LennyBotSourceConfig:
     def __init__(self) -> None:
         self._type = None
-        self._repository = None
-        self._regex = None
+        self._repository: Optional[str] = None
+        self._regex: Optional[str] = None
         self._source_url = None
         self._lts_only = None
 
